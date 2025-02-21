@@ -1,0 +1,149 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "buildDev",
+      "command": "dotnet",
+      "type": "process",
+      "dependsOn": "serveFrontEnd",
+      "args": [
+        "build",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary;ForceNoAlign"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "buildFrontEnd",
+      "command": "npm",
+      "type": "shell",
+      "args": [
+        "run",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/Web/VueApp"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "serveFrontEnd",
+      "command": "npm",
+      "type": "shell",
+      "isBackground": true,
+      "runOptions": {
+        "instanceLimit": 1,
+        "reevaluateOnRerun": true
+      },
+      "args": [
+        "run",
+        "dev",
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/Web/VueApp"
+      },
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": ".",
+          }
+        }
+      ]
+    },
+    {
+      "label": "publishWindows-x64",
+      "command": "dotnet",
+      "type": "process",
+      "dependsOn": [
+        "buildFrontEnd"
+      ],
+      "args": [
+        "publish",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "-o",
+        "${workspaceFolder}/Publish/Windows-x64",
+        "-r",
+        "win-x64",
+        "--no-self-contained"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishLinux-x64",
+      "command": "dotnet",
+      "type": "process",
+      "dependsOn": [
+        "buildFrontEnd"
+      ],
+      "args": [
+        "publish",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "-o",
+        "${workspaceFolder}/Publish/Linux-x64",
+        "-r",
+        "linux-x64",
+        "--no-self-contained"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishLinux-Arm64",
+      "command": "dotnet",
+      "type": "process",
+      "dependsOn": [
+        "buildFrontEnd"
+      ],
+      "args": [
+        "publish",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "-o",
+        "${workspaceFolder}/Publish/Linux-Arm64",
+        "-r",
+        "linux-arm64",
+        "--no-self-contained"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/Web/MaSistemas.Web.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

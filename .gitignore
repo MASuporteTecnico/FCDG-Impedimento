@@ -1,0 +1,34 @@
+Temp
+Business/bin
+Business/obj
+ViewModel/bin
+ViewModel/obj
+Model/bin
+Model/obj
+Web/bin
+Web/obj
+Web/wwwroot
+Web/appsettings.json
+Publish
+**/node_modules
+
+# Others
+.DS_Store
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sw?
+.fake

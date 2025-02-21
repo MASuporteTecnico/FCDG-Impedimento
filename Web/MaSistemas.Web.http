@@ -1,0 +1,6 @@
+@MaSistemas.Web_HostAddress = http://localhost:5276
+
+GET {{MaSistemas.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

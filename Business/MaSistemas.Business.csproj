@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+ 
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>MaSistemas.Business</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+
+	<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+
+	<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+
+	<PackageReference Include="ValueInjecter" Version="3.2.0" />
+</ItemGroup>
+
+ <ItemGroup>    
+    <ProjectReference Include="..\ViewModel\MaSistemas.ViewModel.csproj" />
+    <ProjectReference Include="..\Model\MaSistemas.Model.csproj" />
+  </ItemGroup>
+</Project>

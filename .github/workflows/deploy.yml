@@ -1,0 +1,156 @@
+﻿name: MaSistemasDeployment #Nome da action
+
+on:
+  #Informo que vou executar algo durante um PUSH no GitHub
+  push:
+    
+    #Informo que toda vez que der um push neste branch, a action vai ser executada
+    #Pode ser colocado quantos branchs quiser que seja
+    branches: [main] 
+
+#Lista de jobs que será executada após o puch no branch
+jobs: 
+  
+
+  #JOB1 - Buildar o frontend com o npm no AppVue
+  BuildFrontEnd:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build MaSistemas FrontEnd - VueApp
+      
+      #Mudo a diretorio de trabalho para dentro do app Vue
+      working-directory: Web/VueApp 
+      
+      #Executo a lista de comandos npm para dar build no app Vue
+      #Veja que, como usamos os vue-cli, é necessáio mandar instalar ele também andes do Build
+      #Esta instalação, na segund linha, é necessária par quem dá build no Vue é o comando 'vue-cli-service build', um dos scrips no 'package.json'
+      run: | 
+        npm install
+        npm run build
+    
+    #Preciso salvar o output de arquivos deste Build num espaço temporário do github, para ser aproveitoado no proxímo job
+    #Isso é necessário pois, quanto um JOB termina, ele automaticamente apaga todos os arquivos por ele gerado durante a sua execução
+    #Neste caso seria a pasta 'Web/wwwroot', local configurado para o npm colocar os arquivos transpilaodos
+    #Esta configuração de diretório de saída do 'npm build' está configurado no arqiuvo vue.config.js
+    - name: Temporarily Save Publish 
+      uses: actions/upload-artifact@v4
+      with:
+        name: MaSistemasPublishFront
+        path: Web/wwwroot
+
+
+  #JOB2 - Buildar o backend, com o dotnet
+  BuildBackEnd:
+    
+    #Informo em 'needs' que é necessário que o JOB1 terminem com sucesso para que este seja executado
+    needs: BuildFrontEnd
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    #Aqui pego os arquivos temporários, gerados pelo job anterior, que serão necessários para este job
+    #A action vai pegar os arquivos 'Web/wwwroot' do espaço temporário e colocar dentro do ambiente de trabalho
+    #Com isso teremos os arquivos gerados pelo build anterior aqui neste JOB, dentro da pasta 'Web/wwwroot'
+    - name: Retrieve saved Publish
+      uses: actions/download-artifact@v4
+      with:
+        name: MaSistemasPublishFront
+        path: Web/wwwroot
+    
+    #Configuração do JOB para usar o donet 6
+    - name: Build/Publish MaSistemas .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    #Aqui rodo o publish, o dotnet vai restaurar os pacotes automaticamnete antes de dar o publish
+    #Vamos exportas para a pasta 'Publish/x64', pois estamos publicando no linox da Oracle que é desta plataforma
+    - name: Publish Linux Arm64
+      run: dotnet publish Web/MaSistemas.Web.csproj /property:GenerateFullPaths=true -c Release -o Publish/x64 -r linux-x64 --no-self-contained
+
+    #Após executar o publish, preciso manter os aqruivos gerados em 'Publish/x64' num local temporário novamente 
+    #Estes arquivos serão jogados no servidor via ssh no próximo JOB    
+    #Neste caso vamos precisar de todos os arquivos da pasta 'Publish'
+    - name: Temporarily Save Publish
+      uses: actions/upload-artifact@v4
+      with:
+        name: MaSistemasPublishBack
+        path: Publish
+
+  #JOB3 - Enviar os arquivos para o servidor na Oracle
+  DeployToGoogle:
+    
+    #Informo em 'needs' que é necessário que o JOB1 e JOB2 terminem com sucesso
+    needs: [BuildFrontEnd,BuildBackEnd]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    #Aqui pego os arquivos temporários, gerados pelo job anterior, que serão necessários para este job
+    #Com isso a pasta 'Publish/x64' estará disponível neste JOB com todos os arquivos gerados pelo JOB anterior
+    - name: Retrieve saved Publish
+      uses: actions/download-artifact@v4
+      with:
+        name: MaSistemasPublishBack
+        path: Publish
+        
+    #Configuração do JOB para usar o donet 6
+    - name: Deploy MaSistemas .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    
+    #Execução do upload dos arquivos da pasta Publish/x64 para o servidor
+        
+    #----- Confguração da chave SSH (necessária para fazer o upload para o servidor linux na Oracle)
+    #GOOGLECLOUD => chave SSH gerada anteriormente na VM Oracle pelo comando:
+    #ssh-keygen -m PEM -t rsa -b 4096 -C "github@oracle"    
+    
+    #Precisamos pegar os dados da chave pública gerada e adicionar em /home/ubuntu/.ssh/authorized_keys
+    #Cuidados para não remover a chave SSH atual do arquivo, pois é utiliada para logar no servidor via PUTTY e pelo painel do Oracle
+    
+    #Pegamos os dados da chave privada e configuramos ela no repositório do GitHub em:
+    #Settings : Secrets and Variables > Actions > Guia 'Secrets'    
+    #-----
+
+    #-----Criação das variáveis em 'Settings > Secrets and Variables > Actions > Guia 'Variables'
+    #REMOTE_HOST   => IP/Endereço do Servidor
+    #REMOTE_USER   => Conta para login on servidor Oracle, no nosso caso 'ubuntu'
+    #REMOTE_TARGET => Local onde os arquivosserão jogados, './netapps/masistemas'
+    #-----
+
+    #Como logaremos com o usuário ubunto, o diretório de trabalho será /home/ubunto
+    #Então só completar o restante do camiho com './...' ou colocar o path inteiro '/home/ubuntu/netapps/masistemas'
+    - name: Deploy to Oracle MaSistemas
+      uses: easingthemes/ssh-deploy@main
+      with:
+        SSH_PRIVATE_KEY: ${{secrets.GOOGLECLOUD}}
+        ARGS: "-rlgoDzc -i --delete"
+        SOURCE: "Publish/x64/"
+        REMOTE_HOST: ${{vars.REMOTE_HOST}}
+        REMOTE_USER: ${{vars.REMOTE_USER}}
+        TARGET: ${{vars.REMOTE_TARGET}}
+        
+        #Aqui executo um scrip no servidor antes de fazer o upload
+        #O script ajusta as permissoes dos arquivos antes do upload
+        #Também páro o serviço que roda a plicação com o comando 'sudo systemctl start atasys'
+        #Assim, durante o upload, todos os arquivos poderão ser atualiados sem problema de permissão
+        SCRIPT_BEFORE: |
+          ./stopApp.sh masistemas
+        
+        #Aqui executo um scrip no servidor depois de fazer o upload
+        #Copio um backup do appsettings.json que está no servidor, pois no Gir o appsettings tem configuração inválida para o ambiente do servidor
+        #Ajusto as pemissões dos arquivos novamnete, para o dono www-data, e reinicio a aplicação com o 'sudo systemctl start atasys'
+        SCRIPT_AFTER: |
+          ./appSettings.sh masistemas
+          ./ajustaApp.sh masistemas
+
+      # delete-artifact
+    - uses: geekyeggo/delete-artifact@v5
+      with:
+        name: | 
+          MaSistemasPublishFront
+          MaSistemasPublishBack
+
