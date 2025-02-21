@@ -2,7 +2,7 @@
 
 ## Modelo padrão para os sistemas da M&A
 
-![GitHub branch status](https://img.shields.io/github/checks-status/masuporte/MaSistemas/main)
+![Static Badge](https://img.shields.io/badge/masuporte-MaSistemas-blue)
 
 
 ## Recurso
