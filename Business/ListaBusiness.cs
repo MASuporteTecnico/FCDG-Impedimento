@@ -32,7 +32,7 @@ namespace MaSistemas.Business
 
     public Task<List<ListaViewModel>> Usuarios()
     {
-      IQueryable<SistemaUsuarioModel> model = _context.SistemaUsuariosModel.Where(x => x.Ativo);
+      IQueryable<SistemaUsuarioModel> model = _context.SistemaUsuariosModel.Where(x => x.Ativo && !x.Admin);
 
       IQueryable<ListaViewModel> view = (
                 from i in model
@@ -48,7 +48,7 @@ namespace MaSistemas.Business
 
     public Task<List<ListaViewModel>> GruposUsuarios()
     {
-      IQueryable<SistemaGrupoModel> model = _context.SistemaGruposModel.Where(x => x.Ativo && !x.GrupoDeMenu);
+      IQueryable<SistemaGrupoModel> model = _context.SistemaGruposModel.Where(x => x.Ativo && !x.GrupoDeMenu && !x.UsoInterno);
 
       IQueryable<ListaViewModel> view = (
                 from i in model
@@ -64,7 +64,7 @@ namespace MaSistemas.Business
 
     public Task<List<ListaViewModel>> GruposMenus()
     {
-      IQueryable<SistemaGrupoModel> model = _context.SistemaGruposModel.Where(x => x.Ativo && x.GrupoDeMenu);
+      IQueryable<SistemaGrupoModel> model = _context.SistemaGruposModel.Where(x => x.Ativo && x.GrupoDeMenu && !x.UsoInterno);
 
       IQueryable<ListaViewModel> view = (
                 from i in model
