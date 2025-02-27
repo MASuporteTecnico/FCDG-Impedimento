@@ -438,7 +438,8 @@ namespace MaSistemas.Business
         {
           if (x.Rota == "/#" && x.SubMenu.Count == 0)
           {
-            view.Remove(view[temp.IndexOf(x)]);
+            SistemaMenuViewModel sistemaMenuViewModel = view.Where(y => y.Id == x.Id).FirstOrDefault();
+            view.Remove(sistemaMenuViewModel);
           }
         });
 
