@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace MaSistemas.Model;
 
@@ -49,6 +47,11 @@ public class MaSistemasContext : DbContext
         //Mostrar o SQL Executado no console - PARA MSSQL SERVER
         //Desativar quandao  em produção
         /* optionsBuilder.UseSqlServer(connectionStrings).LogTo(s => System.Diagnostics.Debug.WriteLine(s)); */
+        break;
+
+      case "SQLTE":
+        connectionStrings = configuration["ConnectionStrings:SQLTE"];
+        optionsBuilder.UseSqlite(connectionStrings);
         break;
 
       default:
