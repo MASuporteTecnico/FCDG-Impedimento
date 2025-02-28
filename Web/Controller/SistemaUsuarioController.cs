@@ -215,10 +215,7 @@ public class SistemaUsuarioController : ControllerBase
     {
       View = await Task.Run(() => Business.MenuUsuario(usuario));
     }
-    catch (Exception erro)
-    {
-
-    }
+    catch {}
 
     return View;
   }

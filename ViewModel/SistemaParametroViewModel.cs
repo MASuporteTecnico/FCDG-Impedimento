@@ -1,4 +1,5 @@
-﻿namespace MaSistemas.ViewModel
+﻿#nullable enable
+namespace MaSistemas.ViewModel
 {
   public partial class SistemaParametroViewModel : BaseViewModel
   {
@@ -12,7 +13,7 @@
     public string? EmailLogin { get; set; }
     public string? EmailSenha { get; set; }
     public bool EmailSsl { get; set; }
-    public string PastaTemporarios { get; set; }
-    public string PastaArquivos { get; set; }
+    public string PastaTemporarios { get; set; } = "";
+    public string PastaArquivos { get; set; } = "";
   }
 }

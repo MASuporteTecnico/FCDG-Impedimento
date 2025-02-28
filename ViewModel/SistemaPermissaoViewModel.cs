@@ -1,4 +1,5 @@
-﻿namespace MaSistemas.ViewModel;
+﻿#nullable enable
+namespace MaSistemas.ViewModel;
 
 public class SistemaPermissaoViewModel
 {

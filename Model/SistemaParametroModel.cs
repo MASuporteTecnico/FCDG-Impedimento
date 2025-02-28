@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#nullable enable
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MaSistemas.Model
@@ -18,8 +19,8 @@ namespace MaSistemas.Model
     public string? EmailLogin { get; set; }
     public string? EmailSenha { get; set; }
     public bool EmailSsl { get; set; }
-    public string PastaTemporarios { get; set; }
-    public string PastaArquivos { get; set; }
+    public string PastaTemporarios { get; set; } = "";
+    public string PastaArquivos { get; set; } = "";
 
   }
 }

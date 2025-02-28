@@ -1,3 +1,4 @@
+#nullable enable
 namespace MaSistemas.ViewModel
 {
   public class SistemaUsuarioViewModel : BaseViewModel

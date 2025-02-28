@@ -1,3 +1,4 @@
+#nullable enable
 namespace MaSistemas.ViewModel
 {
   public class SistemaMenuViewModel : BaseViewModel
@@ -21,7 +22,7 @@ namespace MaSistemas.ViewModel
 
   public class SistemaRotaPermissaoViewModel : BaseViewModel
   {
-    public string Rota { get; set; }
+    public string Rota { get; set; } = "";
     public int Permissao { get; set; }
   }
 }
