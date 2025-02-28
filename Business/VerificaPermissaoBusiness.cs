@@ -68,7 +68,7 @@ namespace MaSistemas.Business
         if (group.AdminSistema)
           return OK;
 
-        SistemaPermissaoModel MenuGrupo = _context.SistemaPermissoesModel.Where(x => x.SistemaGrupoMenuId == group.Id).FirstOrDefault();
+        SistemaPermissaoModel MenuGrupo = _context.SistemaPermissoesModel.Where(x => x.SistemaGrupoMenuId == group.Id && x.Ativo).FirstOrDefault();
         if (MenuGrupo != null)
         {
           switch (ControllerAction.ToUpper())
@@ -105,7 +105,7 @@ namespace MaSistemas.Business
           return OK;
 
         //Verifica Permissão de Grupo
-        SistemaPermissaoModel MenuGrupo = _context.SistemaPermissoesModel.Where(x => x.Menu.Rota == ApiRequestPath && x.SistemaGrupoUsuarioId == group.Id).FirstOrDefault();
+        SistemaPermissaoModel MenuGrupo = _context.SistemaPermissoesModel.Where(x => x.Menu.Rota == ApiRequestPath && x.SistemaGrupoUsuarioId == group.Id && x.Ativo).FirstOrDefault();
         if (MenuGrupo != null)
         {
           switch (ControllerAction.ToUpper())
@@ -133,7 +133,7 @@ namespace MaSistemas.Business
       }
       
       //Verifica Permissão de Usuário
-      SistemaPermissaoModel MenuUsuario = _context.SistemaPermissoesModel.Where(x => x.Menu.Rota == ApiRequestPath && x.SistemaUsuarioId == usuario.Id).FirstOrDefault();
+      SistemaPermissaoModel MenuUsuario = _context.SistemaPermissoesModel.Where(x => x.Menu.Rota == ApiRequestPath && x.SistemaUsuarioId == usuario.Id && x.Ativo).FirstOrDefault();
       if (MenuUsuario != null)
       {
         switch (ControllerAction.ToUpper())

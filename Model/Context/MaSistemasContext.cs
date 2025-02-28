@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MaSistemas.Model;
 
 public class MaSistemasContext : DbContext
 {
   public MaSistemasContext(DbContextOptions<MaSistemasContext> options)
-      : base(options)
+    : base(options)
   {
   }
 
@@ -67,7 +68,7 @@ public class MaSistemasContext : DbContext
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
-    
+
     modelBuilder.Seed();
   }
 }
@@ -109,7 +110,30 @@ public static class ModelBuilderExtensions
       EMail = "gerencia@masuporte.com.br",
       Senha = "2K4a9C0ow5Ld5ObzJI60gomyKOd0IlLsRPMlBh3s7UIZ7TQVER0d8YK3wc9YXRWzMIpMX3sVX1YC3ant7cm/7w==",
       Salt = "AYmL/ZbezPlCZaWWhSJBpA==",
-      Ativo = true
+      EmpresaId = 1,
+      Ativo = true,
+      Admin = true
+    };
+
+    List<SistemaMenuModel> SeedMenu = new () {
+      //Raiz do Menu
+      new () { Id = 1, MenuPaiId = null, Nome = "Menu Sistema", Rota = ".", Icone = ".", Divisor = false, Ordem = 0, Ativo = true},
+
+      //Menus principais
+      new () { Id = 2, MenuPaiId = 1, Nome = "Home", Rota = "/", Icone = "mdi-home-outline", Divisor = false, Ordem = 1, Ativo = true},
+      new () { Id = 3, MenuPaiId = 1, Nome = "Cadastro", Rota = "/#", Icone = "mdi-archive-outline", Divisor = false, Ordem = 2, Ativo = true},
+      new () { Id = 4, MenuPaiId = 1, Nome = "Sistema", Rota = "/#", Icone = "mdi-cog-outline", Divisor = false, Ordem = 3, Ativo = true},
+
+      //Submenus Cadastro      
+      new () { Id = 5, MenuPaiId = 3, Nome = "Empresas", Rota = "/Cadastro/Empresa", Icone = "mdi-chevron-right", Divisor = false, Ordem = 1, Ativo = true },  
+
+      //Submenus Sistema      
+      new () { Id = 6, MenuPaiId = 4, Nome = "Usuários", Rota = "/Sistema/Usuario", Icone = "mdi-chevron-right", Divisor = false, Ordem = 1, Ativo = true },
+      new () { Id = 7, MenuPaiId = 4, Nome = "Grupos", Rota = "/Sistema/Grupo", Icone = "mdi-chevron-right", Divisor = false, Ordem = 2, Ativo = true },
+      new () { Id = 8, MenuPaiId = 4, Nome = "Permissões", Rota = "/Sistema/Permissao", Icone = "mdi-chevron-right", Divisor = false, Ordem = 3, Ativo = true},
+      new () { Id = 9, MenuPaiId = 4, Nome = "Menu", Rota = "/Sistema/Menu", Icone = "mdi-chevron-right", Divisor = false, Ordem = 4, Ativo = true },
+      new () { Id =10, MenuPaiId = 4, Nome = "Parâmetros", Rota = "/Sistema/Parametro", Icone = "mdi-chevron-right", Divisor = false, Ordem = 5, Ativo = true },
+
     };
 
     modelBuilder.Entity<EmpresaModel>().HasData(
@@ -126,6 +150,10 @@ public static class ModelBuilderExtensions
 
     modelBuilder.Entity<SistemaUsuarioModel>().HasData(
       SeedUsuario
+    );
+
+    modelBuilder.Entity<SistemaMenuModel>().HasData(
+      SeedMenu
     );
   }
 }

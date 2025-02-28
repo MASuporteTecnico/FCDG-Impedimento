@@ -10,6 +10,7 @@ public class SistemaPermissaoViewModel
     Index = false;
     Edit = false;
     Save = false;
+    Ativo = true;
   }
 
   public int Id { get; set; }

@@ -10,7 +10,7 @@ namespace MaSistemas.Business
 {
   public class SistemaMenuBusiness : BaseBusiness<SistemaMenuViewModel, SistemaMenuModel, PaginacaoViewModel>
   {
-    private readonly MaSistemasContext _context = new();
+    private readonly MaSistemasContext _context;
 
     public SistemaMenuBusiness()
     {
@@ -70,16 +70,24 @@ namespace MaSistemas.Business
 
       foreach(SistemaMenuViewModel m in model)
       {
-        m.Ordem = Ordem++;
+        m.Ordem = Ordem++;        
       }
+      
+      List<SistemaMenuModel> lista = new();
 
-      List<SistemaMenuModel> lista = (
-                from i in model.OrderBy(x => x.Ordem)
-                select (SistemaMenuModel)(new SistemaMenuModel()
-                {
-                  SubMenu = SubmenuViewToModel(i.SubMenu)
-                }).InjectFrom(i)
-            ).ToList();
+      foreach(SistemaMenuViewModel m in model)
+      {
+        SistemaMenuModel menu;
+        if(m.Id == 0)
+          menu = new();
+        else
+          menu = _context.SistemaMenusModel.Where(x => x.Id == m.Id).FirstOrDefault();
+
+        menu.InjectFrom(m);
+        menu.SubMenu = SubmenuViewToModel(m.SubMenu);
+
+        lista.Add(menu);
+      }
 
       return lista;
     }
@@ -136,18 +144,25 @@ namespace MaSistemas.Business
       {
         _context.SistemaMenusModel.Add(model);
       }else{
-        _context.SistemaMenusModel.Attach(model);
-      }
-
+        _context.SistemaMenusModel.Attach(model);        
+      }      
       _context.SaveChanges();
+
+      //Limpa menus removidos das tabelas
+      _context.SistemaMenusModel.RemoveRange(_context.SistemaMenusModel.Where(x => x.Id > 1 && x.MenuPai == null));
+      _context.SaveChanges();
+      
     }
 
     public override SistemaMenuViewModel SelectOne(Expression<Func<SistemaMenuModel, bool>> pCondicao)
     {
-      
-      SistemaMenuModel model = _context.SistemaMenusModel.Where(pCondicao).Include(x => x.SubMenu).ThenInclude(x => x.SubMenu).FirstOrDefault();
 
-      SistemaMenuViewModel view = EntityToView(model);
+      SistemaMenuModel model = _context.SistemaMenusModel
+                              .Include(x => x.SubMenu).ThenInclude(x => x.SubMenu)
+                              .Where(pCondicao)
+                              .FirstOrDefault();
+
+      SistemaMenuViewModel view = EntityToView(model);    
       return view;
     }
 
@@ -158,9 +173,14 @@ namespace MaSistemas.Business
         return null;
       }
 
-      SistemaMenuModel model = _context.SistemaMenusModel.Where(x => x.Id == view.Id).Include(x => x.SubMenu).ThenInclude(X => X.SubMenu).FirstOrDefault() ?? new SistemaMenuModel();
+      SistemaMenuModel model = _context.SistemaMenusModel
+                              .Where(x => x.Id == view.Id)
+                              .Include(x => x.SubMenu).ThenInclude(y => y.SubMenu)
+                              .FirstOrDefault() ?? new SistemaMenuModel();
+
+      
       model.InjectFrom(view);
-      model.SubMenu = SubmenuViewToModel(view.SubMenu);
+      model.SubMenu = [.. SubmenuViewToModel(view.SubMenu)];
 
       return model;
     }

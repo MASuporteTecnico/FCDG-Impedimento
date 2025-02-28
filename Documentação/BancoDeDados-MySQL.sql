@@ -67,7 +67,6 @@ CREATE TABLE `SistemaGrupoMenus` (
 
 LOCK TABLES `SistemaGrupoMenus` WRITE;
 /*!40000 ALTER TABLE `SistemaGrupoMenus` DISABLE KEYS */;
-INSERT INTO `SistemaGrupoMenus` VALUES (1,6,3),(3,15,4),(4,9,4),(5,5,4),(6,20,4),(7,4,4),(8,25,3);
 /*!40000 ALTER TABLE `SistemaGrupoMenus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +143,6 @@ CREATE TABLE `SistemaMenus` (
   `Divisor` tinyint(1) DEFAULT '0',
   `Ordem` int(11) DEFAULT '0',
   `Ativo` tinyint(1) DEFAULT '1',
-  `Publico` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -189,7 +187,6 @@ CREATE TABLE `SistemaParametros` (
 
 LOCK TABLES `SistemaParametros` WRITE;
 /*!40000 ALTER TABLE `SistemaParametros` DISABLE KEYS */;
-INSERT INTO `SistemaParametros` VALUES (1,'barbosa@rafaelbarbosa.com.br','teste1@teste.com.br','teste2@teste.com.br','teste3@teste.com.br','smtp.rafaelbarbosa.com.br',587,'barbosa@rafaelbarbosa.com.br','teste1',0,'/var/tmp/MaSistemas/Temp','/var/tmp/MaSistemas/Arq');
 /*!40000 ALTER TABLE `SistemaParametros` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -214,6 +211,14 @@ CREATE TABLE `SistemaPermissoes` (
   `Save` tinyint(1) DEFAULT '0',
   `Ativo` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`Id`)
+  KEY `IX_SistemaPermissoes_SistemaGrupoMenuId` (`SistemaGrupoMenuId`),
+  KEY `IX_SistemaPermissoes_SistemaGrupoUsuarioId` (`SistemaGrupoUsuarioId`),
+  KEY `IX_SistemaPermissoes_SistemaMenuId` (`SistemaMenuId`),
+  KEY `IX_SistemaPermissoes_SistemaUsuarioId` (`SistemaUsuarioId`),
+  CONSTRAINT `FK_SistemaPermissoes_SistemaGrupos_SistemaGrupoMenuId` FOREIGN KEY (`SistemaGrupoMenuId`) REFERENCES `SistemaGrupos` (`Id`),
+  CONSTRAINT `FK_SistemaPermissoes_SistemaGrupos_SistemaGrupoUsuarioId` FOREIGN KEY (`SistemaGrupoUsuarioId`) REFERENCES `SistemaGrupos` (`Id`),
+  CONSTRAINT `FK_SistemaPermissoes_SistemaMenus_SistemaMenuId` FOREIGN KEY (`SistemaMenuId`) REFERENCES `SistemaMenus` (`Id`),
+  CONSTRAINT `FK_SistemaPermissoes_SistemaUsuarios_SistemaUsuarioId` FOREIGN KEY (`SistemaUsuarioId`) REFERENCES `SistemaUsuarios` (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='SISTEMA';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -223,7 +228,6 @@ CREATE TABLE `SistemaPermissoes` (
 
 LOCK TABLES `SistemaPermissoes` WRITE;
 /*!40000 ALTER TABLE `SistemaPermissoes` DISABLE KEYS */;
-INSERT INTO `SistemaPermissoes` VALUES (11,2,4,NULL,NULL,1,1,0,1,1,1,1),(12,5,3,NULL,NULL,1,1,0,1,1,0,1);
 /*!40000 ALTER TABLE `SistemaPermissoes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,19 +240,16 @@ DROP TABLE IF EXISTS `SistemaUsuarios`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SistemaUsuarios` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Nome` varchar(50) NOT NULL,
-  `EMail` varchar(50) DEFAULT NULL,
-  `Senha` varchar(100) NOT NULL,
-  `TentativasErradas` int(11) DEFAULT '0',
-  `Ativo` tinyint(1) DEFAULT '1',
-  `Salt` varchar(50) DEFAULT NULL,
-  `ChaveResetSenha` varchar(100) DEFAULT NULL,
-  `Admin` tinyint(1) DEFAULT '1',
-  `Interno` tinyint(1) DEFAULT '1',
-  `ResetarSenha` tinyint(1) DEFAULT '1',
   `EmpresaId` int(11) DEFAULT NULL,
-  `Telefone` varchar(45) DEFAULT NULL,
+  `Ativo` tinyint(1) DEFAULT '1',
+  `Admin` tinyint(1) DEFAULT '1',
+  `Senha` varchar(100) NOT NULL,
+  `Salt` varchar(50) DEFAULT NULL,
+  `Telefone` varchar(45) DEFAULT NULL,      
+  `EMail` varchar(50) DEFAULT NULL,
   `MenuLateral` tinyint(1) DEFAULT '1',
+  `Nome` varchar(50) NOT NULL,
+  `ChaveResetSenha` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `fk_SistemaUsuarios_1_idx` (`EmpresaId`),
   CONSTRAINT `fk_SistemaUsuarios_1` FOREIGN KEY (`EmpresaId`) REFERENCES `Empresas` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION

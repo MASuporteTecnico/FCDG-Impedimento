@@ -12,7 +12,7 @@ namespace MaSistemas.Model
     public override int Id {get; set;}
     public int? EmpresaId { get; set; }
 
-    public bool Ativo { get; set; } = false;
+    public bool Ativo { get; set; } = true;
     public bool Admin { get; set; } = false;
     public string Senha { get; set; } = "";
     public string Salt { get; set; } = "";

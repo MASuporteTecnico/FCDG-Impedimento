@@ -1,4 +1,6 @@
+using MaSistemas.Business;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -6,6 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 var vueServer = "http://localhost:9083";
 
 int TempoDeExpiracaoDeSessao = 20;
+
+builder.Services.AddDataProtection()
+            .SetApplicationName("MaSistemas")
+            .AddKeyManagementOptions(options =>
+            {
+              options.NewKeyLifetime = new TimeSpan(180, 0, 0, 0);
+              options.AutoGenerateKeys = true;
+            });
 
 //Ajuste de Limite de tamanho para envio de arquivos
 builder.Services.Configure<KestrelServerOptions>(option =>
@@ -56,6 +66,9 @@ builder.Services.AddSession(options =>
   options.IdleTimeout = TimeSpan.FromMinutes(TempoDeExpiracaoDeSessao); // Tempo de expiração da sessão
   options.Cookie.HttpOnly = true; // Definir o cookie como HTTP only
   options.Cookie.IsEssential = true; // Tornar o cookie essencial para usuários do GDPR
+  options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+  options.Cookie.SameSite = SameSiteMode.Strict;
+
 });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -83,6 +96,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddMvc(option => option.EnableEndpointRouting = false);
 
 var app = builder.Build();
+
+
+//Inicializa a conexçao com o banco de dados.
+//Caso não exista, cria e faz o Seed
+DatabaseInitializer.InitializeDatabase();
 
 app.UseCors("AllowVueDevServer");
 app.UseSession();

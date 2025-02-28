@@ -14,6 +14,7 @@ public class SistemaPermissaoModel
     Index = false;
     Edit = false;
     Save = false;
+    Ativo = true;
   }
 
   [Key]
@@ -27,7 +28,7 @@ public class SistemaPermissaoModel
   public bool UsoInterno { get; set; }
   public bool Ativo { get; set; }
 
-  public bool Index { get; set; } // Lita inicial da páginas
+  public bool Index { get; set; } // Lista inicial da páginas
   public bool Edit { get; set; } // Apenas Leitura 
   public bool Save { get; set; } // Escrita / Delete
 

@@ -19,7 +19,7 @@ public class SistemaUsuarioController : ControllerBase
   [AllowAnonymous]
   [PularVeriricaPermissao]
   [Route("Login")]
-  [HttpPost]  
+  [HttpPost]
   public IActionResult Login(SistemaUsuarioViewModel view)
   {
     AjaxResponse<SistemaUsuarioViewModel> Retorno = new();
@@ -210,7 +210,15 @@ public class SistemaUsuarioController : ControllerBase
     SistemaUsuarioViewModel usuario = Funcoes.GetUsuarioSistema(HttpContext);
     SistemaUsuarioBusiness Business = new();
     SistemaMenuViewModel View = new();
-    View = await Task.Run(() => Business.MenuUsuario(usuario));
+
+    try
+    {
+      View = await Task.Run(() => Business.MenuUsuario(usuario));
+    }
+    catch (Exception erro)
+    {
+
+    }
 
     return View;
   }
@@ -221,8 +229,8 @@ public class SistemaUsuarioController : ControllerBase
   public async Task<bool> MenuLateral(bool ativo)
   {
     SistemaUsuarioViewModel usuario = Funcoes.GetUsuarioSistema(HttpContext);
-    SistemaUsuarioBusiness Business = new();    
-    await Task.Run(() => Business.MenuLateral(usuario,ativo));
+    SistemaUsuarioBusiness Business = new();
+    await Task.Run(() => Business.MenuLateral(usuario, ativo));
 
     return ativo;
   }

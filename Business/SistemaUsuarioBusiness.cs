@@ -272,7 +272,7 @@ namespace MaSistemas.Business
                                           .Include(x => x.Menu)
                                           .Include(x => x.GrupoMenu).ThenInclude(y => y.Menus ).ThenInclude(z => z.Menu)
                                           .Include(x => x.GrupoUsuario).ThenInclude(y => y.Menus)
-                                          .Where(x => x.SistemaGrupoUsuarioId == group.Id)];
+                                          .Where(x => x.SistemaGrupoUsuarioId == group.Id && x.Ativo)];
 
         foreach (SistemaPermissaoModel MenuGrupo in MenuGrupos)
         {
@@ -341,7 +341,7 @@ namespace MaSistemas.Business
                                           .Include(x => x.Menu)
                                           .Include(x => x.GrupoMenu).ThenInclude(y => y.Menus).ThenInclude(z => z.Menu)
                                           .Include(x => x.Usuario).Include(y => y.Menu)
-                                          .Where(x => x.SistemaUsuarioId == usuario.Id)];
+                                          .Where(x => x.SistemaUsuarioId == usuario.Id && x.Ativo)];
 
         foreach (SistemaPermissaoModel MenuUsuario in MenuUsuarioPermissao)
         {
