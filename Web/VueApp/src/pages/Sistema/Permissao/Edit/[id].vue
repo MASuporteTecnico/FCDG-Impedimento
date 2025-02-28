@@ -11,7 +11,7 @@
           <v-autocomplete v-if="Model.PermissaoDeGrupoUsuario == true" :items="GruposUsuarios" v-model="Model.GrupoUsuario" label="Grupo de Usuário"></v-autocomplete>
           <v-autocomplete v-else :items="Usuarios" v-model="Model.Usuario" label="Usuário"></v-autocomplete>
         </v-col>
-        <v-col> <v-switch v-model="Model.PermissaoDeGrupoUsuario" label="Grupo de Usuarios" ></v-switch></v-col>
+        <v-col> <v-switch v-model="Model.PermissaoDeGrupoUsuario" label="Grupo de Usuarios"></v-switch></v-col>
       </v-row>
 
       <v-row>
@@ -23,9 +23,9 @@
       </v-row>
 
       <v-row>
-        <v-col> <v-switch v-model="Model.Index" label="Listar"></v-switch></v-col>
-        <v-col> <v-switch v-model="Model.Edit" label="Visualizar"></v-switch></v-col>
-        <v-col> <v-switch v-model="Model.Save" label="Alterar"></v-switch></v-col>
+        <v-col> <v-switch v-model="Model.Index" label="Listar" @change="ListarChange(Model.Index)"></v-switch></v-col>
+        <v-col> <v-switch :readonly="Model.Index ? false : true" v-model="Model.Edit" label="Visualizar" @change="ViualizarChange(Model.Edit)"></v-switch></v-col>
+        <v-col> <v-switch :readonly="Model.Edit ? false : true" v-model="Model.Save" label="Alterar"></v-switch></v-col>
       </v-row>
     </v-form>
     <SaveDelCancel :ReadOnly="ReadOnly" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
@@ -84,13 +84,25 @@ function Index() {
   router.push("/Sistema/Permissao");
 }
 
+function ListarChange(value) {
+  if (!value) {
+    Model.value.Edit = false;
+    Model.value.Save = false;
+  }
+}
+
+function ViualizarChange(value) {
+  if (!value) {    
+    Model.value.Save = false;
+  }
+}
+
 async function GetListas() {
-  
   Usuarios.value = await api.Lista.Usuarios();
   Menus.value = await api.Lista.Menus();
-  
+
   GruposUsuarios.value = await api.Lista.GruposUsuarios();
-  GruposMenus.value = await api.Lista.GruposMenus();  
+  GruposMenus.value = await api.Lista.GruposMenus();
 }
 
 onMounted(async () => {
