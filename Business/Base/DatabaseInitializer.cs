@@ -11,7 +11,7 @@ namespace MaSistemas.Business
     public static void InitializeDatabase()
     {
       IServiceCollection serviceCollection = new ServiceCollection();
-      serviceCollection.AddDbContext<MaSistemasContext>(ServiceLifetime.Scoped);
+      serviceCollection.AddDbContext<MaSistemasContext>(ServiceLifetime.Singleton);
       ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
       var context = serviceProvider.GetRequiredService<MaSistemasContext>();
 
