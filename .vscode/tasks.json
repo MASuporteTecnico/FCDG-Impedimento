@@ -74,6 +74,22 @@
       ]
     },
     {
+      "label": "Sleepdelay",
+      "type": "shell",
+      "command": "sleep 6",
+      "windows": {
+        "command": "ping 127.0.0.1 -n 6 > NUL"
+      },
+      "linux": {
+        "command": "ping 127.0.0.1 -c 6 > /dev/null"
+      },
+      "group": "none",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "new"
+      }
+    },
+    {
       "label": "publishWindows-x64",
       "command": "dotnet",
       "type": "process",
@@ -130,18 +146,6 @@
         "-r",
         "linux-arm64",
         "--no-self-contained"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "watch",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/Web/MaSistemas.Web.csproj"
       ],
       "problemMatcher": "$msCompile"
     }
