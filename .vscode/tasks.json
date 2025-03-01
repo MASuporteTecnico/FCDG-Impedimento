@@ -78,7 +78,7 @@
       "type": "shell",
       "command": "sleep 6",
       "windows": {
-        "command": "ping 127.0.0.1 -n 6 > NUL"
+        "command": "ping 127.0.0.1 -n 6 > $null"
       },
       "linux": {
         "command": "ping 127.0.0.1 -c 6 > /dev/null"
