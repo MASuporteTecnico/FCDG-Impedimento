@@ -34,6 +34,7 @@
 <script>
 export default {
   name: "AutoLogoff",
+  emits: ["idle", "remind"],
   data: function () {
     return {
       display: "",

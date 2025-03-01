@@ -1,6 +1,7 @@
 import axios from 'axios';
 import SistemaApisRotas from './SistemaApisRotas';
 import Router from '../router'; 
+import { useAppStore } from "@/stores/app";
 
 //Pare requsições que não disparam o Loading
 let Axios = axios.create();
@@ -13,6 +14,8 @@ Axios.interceptors.response.use(
   },
   (error) => {
 
+    const store = useAppStore();
+
     switch (error.status) {
       case 401:
         Router.push({ name: "/Logout" });
@@ -22,9 +25,14 @@ Axios.interceptors.response.use(
         Router.push({ name: "/Negado" });
         break;
 
+      case 500:
+        msg = error.response.data?.Mensagem || "Erro interno do servidor (500).";
+        store.SetErroSistema(msg);
+        Router.push({ name: "/Erro" });
+        break;
+
       default:
-        //msg = error.response.data?.Mensagem || "Erro interno do servidor.";
-        //toast.error(msg);
+        // ---
         break;
     }
     return Promise.reject(error);

@@ -25,7 +25,6 @@ public class SistemaParametroController : ControllerBase
     try
     {
       Retorno.Dados = Business.SelectOne(x => x.Id == id);
-
       return Ok(Retorno);
     }
     catch (Exception erro)

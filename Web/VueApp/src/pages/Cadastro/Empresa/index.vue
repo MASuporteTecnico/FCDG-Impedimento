@@ -10,7 +10,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col align="right">
-                <v-btn v-if="!ReadOnly" to="/Cadastro/Empresa/Edit/0" color="primary">
+                <v-btn v-if="!Permissao.SomenteLeitura" to="/Cadastro/Empresa/Edit/0" color="primary">
                   Novo
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -32,8 +32,8 @@
           </template>
 
           <template v-slot:[`item.Action`]="{ item }">
-            <v-icon v-if="!ReadOnly" @click="Edit(item.Id)" color="teal">mdi-pencil</v-icon>
-            <v-icon v-else-if="!ListOnly" @click="Edit(item.Id)" color="info">mdi-eye-outline</v-icon>
+            <v-icon v-if="!Permissao.SomenteLeitura" @click="Edit(item.Id)" color="teal">mdi-pencil</v-icon>
+            <v-icon v-else-if="!Permissao.SomenteListar" @click="Edit(item.Id)" color="info">mdi-eye-outline</v-icon>
           </template>
         </v-data-table-server>
       </v-col>
@@ -52,8 +52,14 @@ import { ref, inject, computed } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const router = useRouter();
-const store = useAppStore();
-const api = inject("SistemaApis");
+const store  = useAppStore();
+const api    = inject("SistemaApis");
+
+let GridData = ref([]);
+
+const Permissao = computed(() => {
+  return store.GetPermissao;
+});
 
 const Header = [
   { title: "Nome", key: "Nome", sortable: true },
@@ -70,8 +76,6 @@ const RowsPerPageItems = [
   { value: 100, title: "100" },
   { value: 200, title: "200" },
 ];
-
-let GridData = ref([]);
 
 let Pagination = ref({
   page: 1,
@@ -101,14 +105,6 @@ async function Index() {
 function Edit(id) {
   if (id) router.push(`/Cadastro/Empresa/Edit/${id}`);
 }
-
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
-});
-
-const ListOnly = computed(() => {
-  return store.GetListOnly;
-});
 
 onMounted(async () => {
   await Index();

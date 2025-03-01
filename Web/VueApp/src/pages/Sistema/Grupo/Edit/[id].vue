@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form :disabled="ReadOnly">
+    <v-form :disabled="Permissao.SomenteLeitura">
       <v-row>
         <v-col> <v-text-field :readonly="true" v-model="Model.Id" label="Id"></v-text-field> </v-col>
         <v-col> <v-switch v-model="Model.Ativo" label="Ativo"></v-switch></v-col>
@@ -8,34 +8,34 @@
 
       <v-row>
         <v-col cols="6"> <v-text-field v-model="Model.Nome" label="Nome"></v-text-field> </v-col>
-        
       </v-row>
 
       <v-row>
-        <v-col cols="6"  style="border: #024672 2px solid !important">
+        <v-col cols="6" style="border: #024672 2px solid !important">
           <v-data-table :items="GridData" :headers="Header" :hideDefaultFooter="true" :disableSort="true" noDataText="Grupo vazio.">
             <template v-slot:[`item.Action`]="{ item }">
-              <v-icon @click="RemoverMembro(item)" color="error" v-if="!ReadOnly">mdi-trash-can-outline</v-icon>
+              <v-icon @click="RemoverMembro(item)" color="error" v-if="!Permissao.SomenteLeitura">mdi-trash-can-outline</v-icon>
             </template>
           </v-data-table>
         </v-col>
         <v-col cols="6">
           <v-row>
-            <v-col cols="3" lg="6" md="10" sm="12" xs="12" >
+            <v-col cols="3" lg="6" md="10" sm="12" xs="12">
               <v-autocomplete v-if="Model.GrupoDeMenu == true" :items="Menus" v-model="Membro" label="Menu"></v-autocomplete>
               <v-autocomplete v-else :items="Usuarios" v-model="Membro" label="Usuario"></v-autocomplete>
             </v-col>
             <v-col cols="3" lg="6" md="10" sm="12" xs="12"> <v-switch v-model="Model.GrupoDeMenu" label="Grupo de Menu" @change="TipoGrupoChange()"></v-switch></v-col>
           </v-row>
+          
           <v-row>
             <v-col>
-              <v-btn @click="AdicionarMembro()" v-if="!ReadOnly">Adicionar Membro <v-icon>mdi-account-plus</v-icon> </v-btn>
+              <v-btn @click="AdicionarMembro()" v-if="!Permissao.SomenteLeitura">Adicionar Membro <v-icon>mdi-account-plus</v-icon> </v-btn>
             </v-col>
           </v-row>
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="ReadOnly" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -59,15 +59,15 @@ let Usuarios = ref([]);
 let Menus = ref([]);
 let Membro = ref(null);
 
+const Permissao = computed(() => {
+  return store.GetPermissao;
+});
+
 const DataHeader = [
   { title: "Membos do Grupo", key: "Usuario.Nome", sortable: true },
   { title: "Membos do Grupo", key: "Menu.Nome", sortable: false },
   { title: "", key: "Action", width: "80px" },
 ];
-
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
-});
 
 const Header = computed(() => {
   if (Model.value.GrupoDeMenu) {
@@ -95,11 +95,10 @@ async function Edit(id) {
 }
 
 async function Save() {
-  
   //Limpo o array que não será utilizado antes de enviar para o backend
   if (Model.value.GrupoDeMenu) {
     Model.value.Usuarios = [];
-  } else{
+  } else {
     Model.value.Menus = [];
   }
 

@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-form :disabled="ReadOnly">
+    <v-form :disabled="Permissao.SomenteLeitura">
       <v-row>
         <v-col cols="6" lg="5" md="5" offset-lg="0" >
-          <v-treeview open-all :disabled="ReadOnly" :items="[Model]" v-model="MenuSelecionado" v-model:activated="MenuAtivado" return-object mandatory activatable item-children="SubMenu" select-strategy="single-leaf" :expand-icon="null" :collapse-icon="null" @update:activated="ItemChanged($event)">
+          <v-treeview open-all :disabled="Permissao.SomenteLeitura" :items="[Model]" v-model="MenuSelecionado" v-model:activated="MenuAtivado" return-object mandatory activatable item-children="SubMenu" select-strategy="single-leaf" :expand-icon="null" :collapse-icon="null" @update:activated="ItemChanged($event)">
             <template v-slot:prepend="{ item, isOpen }">
               <v-icon>
                 {{ item.Icone }}
@@ -17,7 +17,7 @@
               <v-row>
                 <v-col>
                   <br />
-                  <v-btn :disabled="!HabilitadoCriarNovo" @click="NovoItemMenu(Item)" v-if="!ReadOnly"> Adicionar Novo Item de Menu<v-icon> mdi-plus </v-icon> </v-btn>
+                  <v-btn :disabled="!HabilitadoCriarNovo" @click="NovoItemMenu(Item)" v-if="!Permissao.SomenteLeitura"> Adicionar Novo Item de Menu<v-icon> mdi-plus </v-icon> </v-btn>
                 </v-col>
               </v-row>
             </v-col>
@@ -44,10 +44,10 @@
                   <v-col>
                     <v-text-field v-model="Item.Ordem" label="Ordem" readonly>
                       <template v-slot:append-inner>
-                        <v-btn variant="tonal" rounded="0" @click="OrderChangedDown()" v-if="!ReadOnly">
+                        <v-btn variant="tonal" rounded="0" @click="OrderChangedDown()" v-if="!Permissao.SomenteLeitura">
                           <v-icon size="x-large" class="ma-0 pa-0"> mdi-chevron-down</v-icon>
                         </v-btn>
-                        <v-btn variant="tonal" rounded="0" @click="OrderChangedUp()" v-if="!ReadOnly">
+                        <v-btn variant="tonal" rounded="0" @click="OrderChangedUp()" v-if="!Permissao.SomenteLeitura">
                           <v-icon size="x-large" class="ma-0 pa-0"> mdi-chevron-up </v-icon>
                         </v-btn>
                       </template>
@@ -59,7 +59,7 @@
                 </v-row>
                 <v-row>
                   <v-col>
-                    <v-btn block color="warning" @click="ExcluirItemMenu(Item)" :disabled="!ItemSelecionado" v-if="!ReadOnly"> Excluir Item de Menu<v-icon> mdi-times </v-icon> </v-btn>
+                    <v-btn block color="warning" @click="ExcluirItemMenu(Item)" :disabled="!ItemSelecionado" v-if="!Permissao.SomenteLeitura"> Excluir Item de Menu<v-icon> mdi-times </v-icon> </v-btn>
                   </v-col>
                 </v-row>
               </v-form>
@@ -68,7 +68,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel NoDelete :ReadOnly="ReadOnly"  v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
+    <SaveDelCancel NoDelete :ReadOnly="Permissao.SomenteLeitura"  v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -91,8 +91,8 @@ let MenuAtivado = ref([])
 
 const store = useAppStore();
 
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
+const Permissao = computed(() => {
+  return store.GetPermissao;
 });
 
 const ItemSelecionado = computed(() => {

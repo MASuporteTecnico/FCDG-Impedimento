@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form :disabled="ReadOnly">
+    <v-form :disabled="Permissao.SomenteLeitura">
       <v-card>
         <v-tabs v-model="TabParametros" bg-color="primary">
           <v-tab value="Sistema">Sistema</v-tab>
@@ -47,7 +47,7 @@
         </v-card-text>
       </v-card>
     </v-form>
-    <SaveDelCancel NoDelete :ReadOnly="ReadOnly" v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
+    <SaveDelCancel NoDelete :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -66,8 +66,8 @@ const store = useAppStore();
 let Model = ref({});
 let TabParametros = ref(null);
 
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
+const Permissao = computed(() => {
+  return store.GetPermissao;
 });
 
 async function Edit() {

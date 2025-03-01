@@ -49,30 +49,37 @@ router.beforeEach((to, from, next) => {
       return x;
   })
 
-  const publicPages = ['/login', '/logout', '/negado', '/erro'];
-  const loggedPublicPages = ['/', '/trocarsenha'];
+  const rotasPublicas = ['/login', '/logout', '/negado', '/erro'];
+  const rotasLiberadas = ['/', '/trocarsenha'];
 
-  const authRequired = !publicPages.includes(to.path.toLowerCase());
-  const isLoggedPublicPages = loggedPublicPages.includes(to.path.toLowerCase());
-  const loggedIn = store.getUsrLogged;
+  const requerAutenticacao = !rotasPublicas.includes(to.path.toLowerCase());
+  const ehRotaLiberada = rotasLiberadas.includes(to.path.toLowerCase());
+  const naoEncontrada = to.name == "/[...path]";
+  const usuarioLogado = store.getUsrLogged;
 
   document.title = to.meta.title;
   store.SetTituloTela(to.meta.title);
 
   //Em rotas públicas, libera acesso
-  if (publicPages.includes(to.path.toLowerCase())) {
+  if (!requerAutenticacao) {
     next();
     return;
   }
 
-  //Em páginas públicas com usuário logado, é liberado
-  if (isLoggedPublicPages && loggedIn) {
+  //Em rotas não encontradas, libera acesso
+  if (naoEncontrada) {
     next();
     return;
   }
 
-  //Verifica se o usiários está logado.
-  if (authRequired && !loggedIn) {
+  //Em rotas liberadas, e com usuário logado, é liberado
+  if (ehRotaLiberada && usuarioLogado) {
+    next();
+    return;
+  }
+
+  //Verifica se o usiários está logado em rotas que requerem autenticação
+  if (requerAutenticacao && !usuarioLogado) {
     //Se não estiver logado, redireciona para págian de login
     next('/login');
     return;

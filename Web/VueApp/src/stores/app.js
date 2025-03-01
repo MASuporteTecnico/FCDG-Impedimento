@@ -20,7 +20,8 @@ export const useAppStore = defineStore('app', {
       SomenteListar: false
     },
     TituloTela: "",
-    MenuLateralATivo: true
+    MenuLateralATivo: true,
+    ErroSistema: ""
   }),
   getters: {
     getUsrOpe: (state) => state.UsrOpe,
@@ -33,6 +34,7 @@ export const useAppStore = defineStore('app', {
     GetPermissao: (state) => state.Permissao,
     GetTituloTela: (state) => state.TituloTela,
     GetMenuLateralATivo: (state) => state.MenuLateralATivo,
+    GetErroSistema: (state) => state.ErroSistema
   },
   actions: {
     UsrLogon() {this.UsrLogged = true;},
@@ -46,6 +48,7 @@ export const useAppStore = defineStore('app', {
     SetPermissao(status) { this.Permissao = status },
     SetTituloTela(status) { this.TituloTela = status },
     SetMenuLateralATivo(status) { this.MenuLateralATivo = status },
+    SetErroSistema(status) { this.ErroSistema = status }
   },
   persist: true
 })

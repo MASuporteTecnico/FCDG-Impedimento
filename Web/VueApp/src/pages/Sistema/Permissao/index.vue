@@ -10,7 +10,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col align="right">
-                <v-btn v-if="!ReadOnly" to="/Sistema/Permissao/Edit/0" color="primary">
+                <v-btn v-if="!Permissao.SomenteLeitura" to="/Sistema/Permissao/Edit/0" color="primary">
                   Novo
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -56,9 +56,9 @@
             </span>
           </template>
 
-          <template v-slot:[`item.Action`]="{ item }">
-            <v-icon v-if="!ReadOnly" @click="Edit(item.Id)" color="teal">mdi-pencil</v-icon>
-            <v-icon v-else-if="!ListOnly"  @click="Edit(item.Id)" color="info">mdi-eye-outline</v-icon>            
+          <template v-if="!Permissao.SomenteListar" v-slot:[`item.Action`]="{ item }">
+            <v-icon v-if="!Permissao.SomenteLeitura" @click="Edit(item.Id)" color="teal">mdi-pencil</v-icon>
+            <v-icon v-else @click="Edit(item.Id)" color="info">mdi-eye-outline</v-icon>
           </template>
         </v-data-table-server>
       </v-col>
@@ -77,8 +77,10 @@ import { ref, inject } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const router = useRouter();
-const store = useAppStore();
-const api = inject("SistemaApis");
+const store  = useAppStore();
+const api    = inject("SistemaApis");
+
+let GridData = ref([]);
 
 const Header = [
   { title: "Id", key: "Id", sortable: true },
@@ -99,8 +101,6 @@ const RowsPerPageItems = [
   { value: 200, title: "200" },
 ];
 
-let GridData = ref([]);
-
 let Pagination = ref({
   page: 1,
   itemsPerPage: 100,
@@ -113,12 +113,8 @@ let Pagination = ref({
   },
 });
 
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
-});
-
-const ListOnly = computed(() => {
-  return store.GetListOnly;
+const Permissao = computed(() => {
+  return store.GetPermissao;
 });
 
 function RowProps(data) {
@@ -129,7 +125,6 @@ function RowProps(data) {
 
 async function Index() {
   let response = await api.Permissao.Index(Pagination.value);
-
   GridData.value = response.Dados;
   Pagination.value = response.Paginacao;
 }

@@ -70,7 +70,8 @@ axios.interceptors.response.use(
 
       case 500:
         msg = error.response.data?.Mensagem || "Erro interno do servidor (500).";
-        router.push({ name: "/Erro/[msg]", params: { msg: msg } });
+        store.SetErroSistema(msg);
+        router.push({ name: "/Erro"});
         break;
 
       case 400:
@@ -79,7 +80,7 @@ axios.interceptors.response.use(
         break;
 
       case 404:
-        msg = error.message || "Erro interno do servidor (404).";
+        msg = error.message || "Api não encontrada (404).";
         toast.error(msg);
         break;
 

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form :disabled="ReadOnly">
+    <v-form :disabled="Permissao.SomenteLeitura">
       <v-row>
         <v-col> <v-text-field :readonly="true" v-model="Model.Id" label="Id"></v-text-field> </v-col>
         <v-col> <v-switch v-model="Model.Ativo" label="Ativo"></v-switch></v-col>
@@ -28,7 +28,7 @@
         <v-col> <v-switch :readonly="Model.Edit ? false : true" v-model="Model.Save" label="Alterar"></v-switch></v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="ReadOnly" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -43,18 +43,18 @@ import { ref, inject } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const router = useRouter();
-const route = useRoute();
-const store = useAppStore();
-const api = inject("SistemaApis");
+const route  = useRoute();
+const store  = useAppStore();
+const api    = inject("SistemaApis");
 
-let Model = ref({});
+let Model    = ref({});
 let Usuarios = ref([]);
-let Menus = ref([]);
+let Menus    = ref([]);
 let GruposUsuarios = ref([]);
-let GruposMenus = ref([]);
+let GruposMenus    = ref([]);
 
-const ReadOnly = computed(() => {
-  return store.GetReadOnly;
+const Permissao = computed(() => {
+  return store.GetPermissao;
 });
 
 async function Edit(id) {
