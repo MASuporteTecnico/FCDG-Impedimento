@@ -35,7 +35,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
