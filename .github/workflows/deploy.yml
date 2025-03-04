@@ -7,7 +7,7 @@ on:
     #Informo que toda vez que der um push neste branch, a action vai ser executada
     #Pode ser colocado quantos branchs quiser que seja
     #branches: [main] 
-    branches: [desativado] 
+    branches: [main] 
 
 #Lista de jobs que será executada após o puch no branch
 jobs: 
