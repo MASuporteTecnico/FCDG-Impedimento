@@ -35,11 +35,11 @@
         <b>De:</b> {{ MensagemSelecionada.De.Nome }} <br />
         <b>Para:</b> {{ MensagemSelecionada.Para.map((Para) => Para.Usuario.Nome).join(", ") }}
       </v-card-subtitle>
-      <v-card-text>{{ MensagemSelecionada.Texto }}</v-card-text>
+      <v-card-text> <VuetifyViewer :value="MensagemSelecionada.Texto" /> </v-card-text>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="DialogEscreverMensagem" :overlay="false" max-width="500px">
+  <v-dialog v-model="DialogEscreverMensagem" :overlay="false" max-width="600px">
     <v-card>
     <v-card-title>Nova Mensagem</v-card-title>
       <v-card-text>
@@ -50,7 +50,7 @@
           <v-col> <v-autocomplete :items="Usuarios" v-model="UsuariosSelecionados" label="Para:" multiple=""></v-autocomplete> </v-col>
         </v-row>
         <v-row>
-          <v-col> <v-textarea  label="Texto" v-model="MensagemSelecionada.Texto"></v-textarea> </v-col
+          <v-col> <VuetifyTiptap v-model="MensagemSelecionada.Texto" dense outlined hideBubble removeDefaultWrapper label="Texto" /> </v-col
         ></v-row>
       </v-card-text>
       <v-card-actions>

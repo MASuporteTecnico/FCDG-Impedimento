@@ -15,6 +15,7 @@ import App from './App.vue'
 import moment from 'moment';
 import VueTheMask from 'vue-the-mask'
 import { createI18n } from 'vue-i18n'
+import { vuetifyProTipTap } from './plugins/tiptap'
 
 
 const numberFormats = {
@@ -155,7 +156,12 @@ app.provide('SistemaApis', SistemaApis);
 app.use(VueTheMask)
 app.use(Toast, options);
 app.use(i18n);
+app.use(vuetifyProTipTap)
 
 registerPlugins(app)
+
+// fix warning injected property "decorationClasses" is a ref and will be auto-unwrapped
+// https://github.com/ueberdosis/tiptap/issues/1719
+app.config.unwrapInjectedRef = true
 
 app.mount('#app')
