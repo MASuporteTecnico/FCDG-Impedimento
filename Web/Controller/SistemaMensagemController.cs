@@ -44,7 +44,7 @@ public class SistemaMensagemController : ControllerBase
       SistemaUsuarioViewModel usuario = Funcoes.GetUsuarioSistema(HttpContext);
       Business.Save(usuario, view);
       Retorno.Dados = view;
-      Retorno.Mensagem = "Mensagem salva.";
+      Retorno.Mensagem = "Mensagem enviada.";
 
       return Ok(Retorno);
     }
@@ -68,7 +68,7 @@ public class SistemaMensagemController : ControllerBase
       SistemaUsuarioViewModel usuario = Funcoes.GetUsuarioSistema(HttpContext);
       Business.SetarLidaNaoLida(usuario,view);
       Retorno.Dados = view;
-      Retorno.Mensagem = "Mensagem salva.";
+      Retorno.Mensagem = "Mensagem atualizada.";
 
       return Ok(Retorno);
     }
@@ -114,7 +114,6 @@ public class SistemaMensagemController : ControllerBase
       SistemaUsuarioViewModel usuario = Funcoes.GetUsuarioSistema(HttpContext);
       Business.Delete(usuario, view);
       Retorno.Dados = view;
-      Retorno.Mensagem = "Mensagem deletada.";
 
       return Ok(Retorno);
     }

@@ -77,7 +77,7 @@ body {
         <div class="mr-3">
           <!-- <AutoLogoffBKP :Seconds="TimeoutBaseTime" Enabled Page="/Logout"></AutoLogoffBKP -->
           <AutoLogoff :duration="TimeoutBaseTime" :reminders="[15]" @idle="onidle()"></AutoLogoff>          
-          <Avisos></Avisos>
+          <Mensagens></Mensagens>
           <MenuUsuario :UsrOpe="UsrOpe"></MenuUsuario>
         </div>
       </template>
@@ -96,9 +96,6 @@ body {
 <script setup>
 import { ref, computed } from "vue";
 import { useAppStore } from "@/stores/app";
-import Avisos from "@/components/Avisos.vue";
-import AutoLogoff from "@/components/AutoLogoff.vue";
-import MenuSistemaTopo from "@/components/MenuSistemaTopo.vue";
 
 const store = useAppStore();
 const rail = ref(false);

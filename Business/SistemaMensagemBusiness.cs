@@ -142,17 +142,25 @@ namespace MaSistemas.Business
 
     public override void Save(SistemaUsuarioViewModel colaborador, SistemaMensagemViewModel entity)
     {
+      //Remetnete é o usuário do sistema
       entity.De = colaborador;
-      SistemaMensagemModel model = ViewToEntity(entity, EnumOperacao.Alterar);
+      
+      SistemaMensagemModel model;
+      SistemaMensagemValidator validator = new();
 
-      if (model.Id == 0)
+      if (entity.Id == 0)
       {
+        validator.ValidaInclusao(entity);
+        model = ViewToEntity(entity, EnumOperacao.Alterar);
         _context.SistemaMensagensModel.Add(model);
       }
       else
       {
+        validator.ValidaAlteracao(entity);
+        model = ViewToEntity(entity, EnumOperacao.Alterar);
         _context.SistemaMensagensModel.Attach(model);
       }
+      
       _context.SaveChanges();
     }
 
