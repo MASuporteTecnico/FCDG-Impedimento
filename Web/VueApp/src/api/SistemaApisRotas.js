@@ -10,6 +10,13 @@ const SistemaApisRotas = {
     Logout: "/api/Sistema/Usuario/Logout",
     TrocarSenha: "/api/Sistema/Usuario/TrocarSenha",
   },
+  Mensagem: {
+    Save: "/api/Sistema/Mensagem/Save",
+    Edit: "/api/Sistema/Mensagem/Edit",
+    SetarLidaNaoLida: "/api/Sistema/Mensagem/SetarLidaNaoLida",
+    Delete: "/api/Sistema/Mensagem/Delete",
+    Mensagens: "/api/Sistema/Mensagem/Mensagens",
+  },
   Grupo: {
     Index: "/api/Sistema/Grupo/Index",
     Edit: "/api/Sistema/Grupo/Edit",

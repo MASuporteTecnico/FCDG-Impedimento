@@ -95,7 +95,7 @@ export default createVuetify({
       clearable: true,
       persistentClear: true
     },
-    VTextArea: {
+    VTextarea: {
       variant: 'outlined',
       density: "compact",
       hideDetails: true,

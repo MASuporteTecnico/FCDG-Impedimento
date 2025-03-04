@@ -60,6 +60,9 @@ public class MaSistemasContext : DbContext
   }
 
   public DbSet<SistemaMenuModel> SistemaMenusModel { get; set; } = default!;
+  public DbSet<SistemaMensagemModel> SistemaMensagensModel { get; set; } = default!;
+  public DbSet<SistemaMensagemParaModel> SistemaMensagensParaModel { get; set; } = default!;
+  public DbSet<SistemaMensagemCaixaModel> SistemaMensagensCaixaModel { get; set; } = default!;
   public DbSet<SistemaPermissaoModel> SistemaPermissoesModel { get; set; } = default!;
   public DbSet<SistemaUsuarioModel> SistemaUsuariosModel { get; set; } = default!;
   public DbSet<SistemaParametroModel> SistemaParametrosModel { get; set; } = default!;

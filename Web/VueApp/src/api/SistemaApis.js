@@ -164,6 +164,27 @@ const SistemaApis = {
     },
   },
 
+  Mensagem: {
+    async Save(dados) {
+      return await Save(`${SistemaApisRotas.Mensagem.Save}`, dados);
+    },
+
+    async Edit(id) {
+      return await Edit(`${SistemaApisRotas.Mensagem.Edit}`, `${id}`);
+    },
+
+    async SetarLidaNaoLida(dados) {
+      return await Save(`${SistemaApisRotas.Mensagem.SetarLidaNaoLida}`, dados);
+    },
+
+    async Delete(dados) {
+      return await Delete(`${SistemaApisRotas.Mensagem.Delete}`, dados);
+    },
+
+    async Mensagens() {
+      return await Get(`${SistemaApisRotas.Mensagem.Mensagens}`);
+    },
+  },
   Grupo: {
     async Index(paginacao) {
       return await Index(`${SistemaApisRotas.Grupo.Index}`, paginacao);
