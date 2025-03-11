@@ -8,6 +8,7 @@ namespace MaSistemas.ViewModel
     public string Nome { get; set; } = "";
     public bool Ativo { get; set; } = false;
     public bool AdministradoraGlobal { get; set; } = false;
+    public DateTime? DataContrato { get; set; }
     public virtual ICollection<SistemaUsuarioViewModel> Usuarios { get; set; } = [];
   }
 }

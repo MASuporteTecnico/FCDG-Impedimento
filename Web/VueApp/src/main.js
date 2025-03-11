@@ -16,6 +16,10 @@ import moment from 'moment';
 import VueTheMask from 'vue-the-mask'
 import { createI18n } from 'vue-i18n'
 import { vuetifyProTipTap } from './plugins/tiptap'
+import { registerLicense } from '@syncfusion/ej2-base';
+import { RichTextEditorPlugin } from '@syncfusion/ej2-vue-richtexteditor';
+
+registerLicense('ORg4AjUWIQA/Gnt2XVhhQlJHfVtdW3xLflFzVWpTe1h6d1VWACFaRnZdR11gSXlRdERkWX1dcXZT');
 
 
 const numberFormats = {
@@ -157,6 +161,7 @@ app.use(VueTheMask)
 app.use(Toast, options);
 app.use(i18n);
 app.use(vuetifyProTipTap)
+app.use(RichTextEditorPlugin);
 
 registerPlugins(app)
 

@@ -32,7 +32,7 @@ builder.Services.Configure<FormOptions>(option =>
 });
 
 
-// Configurar CORS
+//Configurar CORS
 builder.Services.AddCors(options =>
 {
   options.AddPolicy("AllowVueDevServer", policy =>
@@ -45,6 +45,9 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddSpaStaticFiles(configuration: options => { options.RootPath = "wwwroot"; });
+
+// Adicione serviços ao container.
+//builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -105,12 +108,24 @@ DatabaseInitializer.InitializeDatabase();
 app.UseCors("AllowVueDevServer");
 app.UseSession();
 app.UseAuthentication();
+app.UseRouting();
 app.MapControllers();
 app.UseStaticFiles();
 app.UseSpaStaticFiles();
 app.UseMvc();
-app.UseRouting();
 app.UseAuthorization();
+
+// //Nova organziação usando o Gemini
+// app.UseStaticFiles(); // 1. Serve arquivos estáticos (CSS, JavaScript, imagens)
+// app.UseSpaStaticFiles(); // 2. Serve arquivos estáticos específicos para Single Page Applications (SPAs)
+// app.UseRouting(); // 3. Define o roteamento da aplicação
+// app.UseCors("AllowVueDevServer"); // 4. Habilita o CORS para o servidor de desenvolvimento do Vue.js
+// app.UseSession(); // 5. Habilita o uso de sessões
+// app.UseAuthentication(); // 6. Autentica o usuário
+// app.UseAuthorization(); // 7. Autoriza o acesso a recursos
+// app.MapControllers(); // 8. Mapeia os controladores da API
+// //app.UseMvc(); // 9. (Obsoleto em .NET 6+) Mapeia rotas MVC (se você ainda estiver usando MVC)
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

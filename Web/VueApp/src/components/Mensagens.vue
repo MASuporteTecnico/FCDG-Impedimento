@@ -28,30 +28,32 @@
     </v-menu>
   </v-btn>
 
-  <v-dialog v-model="DialogMensagem" :overlay="false" max-width="500px">
+  <v-dialog v-model="DialogMensagem" max-width="1200px" min-height="700px">
     <v-card>
       <v-card-title>{{ MensagemSelecionada.Titulo }}</v-card-title>
       <v-card-subtitle>
         <b>De:</b> {{ MensagemSelecionada.De.Nome }} <br />
         <b>Para:</b> {{ MensagemSelecionada.Para.map((Para) => Para.Usuario.Nome).join(", ") }}
       </v-card-subtitle>
-      <v-card-text> <VuetifyViewer :value="MensagemSelecionada.Texto" /> </v-card-text>
+      <v-card-text> <ejs-richtexteditor v-model="MensagemSelecionada.Texto" enableResize enableTabKey :enabled="false"></ejs-richtexteditor> </v-card-text>
     </v-card>
   </v-dialog>
 
-  <v-dialog v-model="DialogEscreverMensagem" :overlay="false" max-width="600px">
+  <v-dialog v-model="DialogEscreverMensagem" max-width="1200px" min-height="700px">
     <v-card>
-    <v-card-title>Nova Mensagem</v-card-title>
+      <v-card-title>Nova Mensagem</v-card-title>
       <v-card-text>
         <v-row>
           <v-col> <v-text-field label="Título" v-model="MensagemSelecionada.Titulo"></v-text-field> </v-col>
         </v-row>
         <v-row>
-          <v-col> <v-autocomplete :items="Usuarios" v-model="UsuariosSelecionados" label="Para:" multiple=""></v-autocomplete> </v-col>
+          <v-col> <v-autocomplete :items="Usuarios" v-model="UsuariosSelecionados" label="Para:" multiple></v-autocomplete> </v-col>
         </v-row>
         <v-row>
-          <v-col> <VuetifyTiptap v-model="MensagemSelecionada.Texto" dense outlined hideBubble removeDefaultWrapper label="Texto" /> </v-col
-        ></v-row>
+          <v-col>
+            <ejs-richtexteditor id="default" ref="rteInstance" v-model="MensagemSelecionada.Texto" :toolbarSettings="toolbarSettings" :enableResize="true" :enableTabKey="true"></ejs-richtexteditor>
+          </v-col>
+        </v-row>
       </v-card-text>
       <v-card-actions>
         <v-btn color="warning" @click="DialogEscreverMensagem = false">Cancelar</v-btn>
@@ -66,6 +68,24 @@
 <script setup>
 import { onMounted, inject } from "vue";
 import { useInterval } from "../composables/useInterval";
+
+import { provide } from 'vue';
+import { RichTextEditorComponent as EjsRichtexteditor, Toolbar, Link, Image, Table, HtmlEditor, QuickToolbar, Resize, PasteCleanup, FormatPainter, EmojiPicker} from "@syncfusion/ej2-vue-richtexteditor";
+const rteInstance = ref(null);
+const richtexteditor = [Toolbar, Link, Image, Table, HtmlEditor, QuickToolbar, Resize, PasteCleanup, FormatPainter, EmojiPicker];
+provide('richtexteditor', richtexteditor);
+
+const toolbarSettings = {
+    type: 'MultiRow',
+    items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
+    'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
+    'LowerCase', 'UpperCase', 'SubScript', 'SuperScript','|',
+    'Formats', 'Alignments', 'OrderedList', 'UnorderedList', 'NumberFormatList', 'BulletFormatList', 'Outdent', 'Indent', '|',
+    'CreateLink', 'Image', '|',
+    'ClearFormat', 'Print', 'SourceCode', 'FullScreen', '|',
+    'Undo', 'Redo'
+  ]
+}
 
 const api = inject("SistemaApis");
 
@@ -147,3 +167,4 @@ onMounted(async () => {
   useInterval(GetMensagens, 15000).start();
 });
 </script>
+
