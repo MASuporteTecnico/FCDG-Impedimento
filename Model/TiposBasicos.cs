@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MaSistemas.Model
 {
-
   public static class EnumExtension
   {
     public static string GetDescription(Enum value)
@@ -29,11 +28,9 @@ namespace MaSistemas.Model
 
   public class ListaMenuAcesso
   {
-
     public int IdMenu { get; set; }
     //  public int? IdGrupo {get;set;}
     //  public int? IdUsuario {get;set;}
-
   }
 
   public class SistemaLogControllerAction

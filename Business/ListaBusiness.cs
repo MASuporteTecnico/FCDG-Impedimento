@@ -2,7 +2,6 @@ using MaSistemas.Model;
 using MaSistemas.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace MaSistemas.Business
 {
   public class ListaBusiness : IDisposable

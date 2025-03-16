@@ -41,7 +41,6 @@ router.beforeEach((to, from, next) => {
 
   const store = useAppStore();
   store.CountDownLogoffReset = !store.CountDownLogoffReset;
-
   const Rotas = store.GetRotas;
 
   const Rota = Rotas.filter((x) => {
@@ -51,7 +50,6 @@ router.beforeEach((to, from, next) => {
 
   const rotasPublicas = ['/login', '/logout', '/negado', '/erro'];
   const rotasLiberadas = ['/', '/trocarsenha'];
-
   const requerAutenticacao = !rotasPublicas.includes(to.path.toLowerCase());
   const ehRotaLiberada = rotasLiberadas.includes(to.path.toLowerCase());
   const naoEncontrada = to.name == "/[...path]";
@@ -97,18 +95,14 @@ router.beforeEach((to, from, next) => {
       }
 
       if (Rota[0].Permissao >= 7) {
-        store.SetReadOnly(false);
         Permissao.SomenteLeitura = false;
       } else {
-        store.SetReadOnly(true);
         Permissao.SomenteLeitura = true;
 
         if (Rota[0].Permissao < 2) {
-          store.SetListOnly(true);
           Permissao.SomenteListar = true;
         }
         else {
-          store.SetListOnly(false);
           Permissao.SomenteListar = false;
         }
       }

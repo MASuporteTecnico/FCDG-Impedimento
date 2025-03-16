@@ -6,7 +6,6 @@ using System.Text.Json.Nodes;
 using MaSistemas.Model;
 using MaSistemas.ViewModel;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Omu.ValueInjecter;
 
 namespace MaSistemas.Business
@@ -83,7 +82,17 @@ namespace MaSistemas.Business
 
       IQueryable<SistemaUsuarioModel> model = _context.SistemaUsuariosModel
                                               .Include(x => x.Empresa)
-                                              .Where(x => x.Id > 1); //Não listar o Admin do sistema
+                                              .Where(x => x.Id > 1) //Não listar o Admin do sistema
+                                              .Select(x => new SistemaUsuarioModel()
+                                              {
+                                                Id = x.Id,
+                                                Nome = x.Nome,
+                                                EMail = x.EMail,
+                                                Ativo = x.Ativo,
+                                                Empresa = x.Empresa,
+                                                Senha = null,
+                                                Telefone = null
+                                              });
 
       if (Nome != "")
         model = model.Where(filtroNome);
@@ -280,8 +289,8 @@ namespace MaSistemas.Business
           {
             int Permissao = 0;
             Permissao += MenuGrupo.Index ? 1 : 0;
-            Permissao += MenuGrupo.Edit ? 2 : 0;
-            Permissao += MenuGrupo.Save ? 4 : 0;
+            Permissao += MenuGrupo.Edit  ? 2 : 0;
+            Permissao += MenuGrupo.Save  ? 4 : 0;
 
             if (!MenuGrupo.PermissaoDeGrupoMenu)
             {
@@ -349,8 +358,8 @@ namespace MaSistemas.Business
           {
             int Permissao = 0;
             Permissao += MenuUsuario.Index ? 1 : 0;
-            Permissao += MenuUsuario.Edit ? 2 : 0;
-            Permissao += MenuUsuario.Save ? 4 : 0;
+            Permissao += MenuUsuario.Edit  ? 2 : 0;
+            Permissao += MenuUsuario.Save  ? 4 : 0;
 
 
             if (!MenuUsuario.PermissaoDeGrupoMenu)

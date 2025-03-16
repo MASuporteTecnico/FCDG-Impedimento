@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore('app', {
   state: () => ({
     UsrOpe : {
-      Nome: "RAFAEL BARBOSA SILVA",
+      Nome: "",
       IdEmpresa: 0,
       Empresa: {},
     },
@@ -13,15 +13,14 @@ export const useAppStore = defineStore('app', {
     IsLoading: false,
     LastError: "",
     Rotas: [],
-    ReadOnly: false,
-    ListOnly: false,
     Permissao: {
       SomenteLeitura: false,
       SomenteListar: false
     },
     TituloTela: "",
     MenuLateralATivo: true,
-    ErroSistema: ""
+    ErroSistema: "",
+    Dominio: null
   }),
   getters: {
     getUsrOpe: (state) => state.UsrOpe,
@@ -29,12 +28,11 @@ export const useAppStore = defineStore('app', {
     getIsLoading: (state) => state.IsLoading,
     GetLastError: (state) => state.LastError,
     GetRotas: (state) => state.Rotas,
-    GetReadOnly: (state) => state.ReadOnly,
-    GetListOnly: (state) => state.ListOnly,
     GetPermissao: (state) => state.Permissao,
     GetTituloTela: (state) => state.TituloTela,
     GetMenuLateralATivo: (state) => state.MenuLateralATivo,
-    GetErroSistema: (state) => state.ErroSistema
+    GetErroSistema: (state) => state.ErroSistema,
+    GetDominio: (state) => state.Dominio
   },
   actions: {
     UsrLogon() {this.UsrLogged = true;},
@@ -43,12 +41,11 @@ export const useAppStore = defineStore('app', {
     SetIsLoading(status) { this.IsLoading = status },
     SetLastError(status) { this.LastError = status },
     SetRotas(status) { this.Rotas = status },
-    SetReadOnly(status) { this.ReadOnly = status },
-    SetListOnly(status) { this.ListOnly = status },
     SetPermissao(status) { this.Permissao = status },
     SetTituloTela(status) { this.TituloTela = status },
     SetMenuLateralATivo(status) { this.MenuLateralATivo = status },
-    SetErroSistema(status) { this.ErroSistema = status }
+    SetErroSistema(status) { this.ErroSistema = status },
+    SetDominio(status) { this.Dominio = status }
   },
   persist: true
 })

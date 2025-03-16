@@ -58,7 +58,7 @@
                   <v-form>
                     <v-row>
                       <v-col>
-                        <v-text-field name="txtLogin" label="E-Mail" id="txtLogin" ref="txtLogin" v-model="UsrLogin.EMail" prepend-inner-icon="mdi-account" @keypress.enter="TabSenha()"></v-text-field>
+                        <v-text-field :suffix="(dominio) ? '@' + dominio : ''" name="txtLogin" label="E-Mail" id="txtLogin" ref="txtLogin" v-model="UsrLogin.EMail" prepend-inner-icon="mdi-account" @keypress.enter="TabSenha()"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-row>
@@ -102,10 +102,12 @@ import { useAppStore } from "@/stores/app";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+const route  = useRoute();
 const store = useAppStore();
 const PassVisible = ref(false);
 const api = inject("SistemaApis");
 
+let dominio = ref(null);
 let txtSenha = ref();
 let txtLogin = ref();
 
@@ -122,11 +124,18 @@ function TabEmail() {
   txtLogin.value.focus();
 }
 
-
 async function Login() {
   try {
-    let response = await api.Usuario.Login(UsrLogin.value);
+
+    let login = {... UsrLogin.value}
+
+    if(dominio.value) {
+      login.EMail += "@" + dominio.value;
+    }
+
+    let response = await api.Usuario.Login(login);
     store.SetUsrOpe(response.Dados);
+    store.SetDominio(dominio.value);
     store.UsrLogon();
     router.push("/");
   } catch (error) {
@@ -134,7 +143,9 @@ async function Login() {
   }
 }
 
-onMounted(() => {
+onMounted(() => {  
+  dominio.value = route.query.dominio ?? null;
+
   store.UsrLogoff();
   store.SetUsrOpe({});
   store.SetIsLoading(false);

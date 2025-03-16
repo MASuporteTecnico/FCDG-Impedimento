@@ -4,7 +4,6 @@ using MaSistemas.ViewModel;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-
 namespace MaSistemas.Business
 {
   public class VerificaPermissaoBusiness : IDisposable
@@ -98,7 +97,7 @@ namespace MaSistemas.Business
       //Verificação por Grupo de Usuário
       List<SistemaGrupoModel> GrupoUsuario = [.. _context.SistemaGruposModel.Where(x => x.Usuarios.Any( x => x.SistemaUsuarioId == usuario.Id))];
 
-      //Verificar se é do grupo admin do sistema, se sim, tem acesso a tudo
+      //Verificar se o grupo tem acesso à rota
       foreach (SistemaGrupoModel group in GrupoUsuario)
       {
         if (group.AdminSistema)
@@ -131,7 +130,41 @@ namespace MaSistemas.Business
           }
         }
       }
-      
+
+      //Verificar se o grupo tem acesso à um grupo de rota
+      foreach (SistemaGrupoModel group in GrupoUsuario)
+      {
+        if (group.AdminSistema)
+          return OK;
+
+        //Verifica Permissão de Grupo
+        SistemaPermissaoModel MenuGrupo = _context.SistemaPermissoesModel.Where(x => x.GrupoMenu.Menus.Any(z => z.Menu.Rota == ApiRequestPath) && x.SistemaGrupoUsuarioId == group.Id && x.Ativo).FirstOrDefault();
+        if (MenuGrupo != null)
+        {
+          switch (ControllerAction.ToUpper())
+          {
+            case "INDEX":
+              sOk = MenuGrupo.Index;
+              break;
+
+            case "EDIT":
+              sOk = MenuGrupo.Edit;
+              break;
+
+            case "SAVE":
+              sOk = MenuGrupo.Save;
+              break;
+
+            case "DELETE":
+              sOk = MenuGrupo.Save;
+              break;
+
+            default:
+              break;
+          }
+        }
+      }
+
       //Verifica Permissão de Usuário
       SistemaPermissaoModel MenuUsuario = _context.SistemaPermissoesModel.Where(x => x.Menu.Rota == ApiRequestPath && x.SistemaUsuarioId == usuario.Id && x.Ativo).FirstOrDefault();
       if (MenuUsuario != null)

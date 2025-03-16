@@ -15,6 +15,10 @@
       </v-row>
 
       <v-row>
+        <v-col> <v-text-field v-model="Model.Telefone" label="Telefone"></v-text-field> </v-col>
+      </v-row>
+
+      <v-row>
         <v-col> <v-text-field v-model="Model.Senha" type="password" label="Senha"></v-text-field> </v-col>
       </v-row>
 
@@ -24,7 +28,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="Model.Id == 0" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -39,11 +43,11 @@ import { ref, inject } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const router = useRouter();
-const route  = useRoute();
-const api    = inject("SistemaApis");
-const store  = useAppStore();
+const route = useRoute();
+const api = inject("SistemaApis");
+const store = useAppStore();
 
-let Model    = ref({});
+let Model = ref({});
 let Empresas = ref([]);
 
 const Permissao = computed(() => {

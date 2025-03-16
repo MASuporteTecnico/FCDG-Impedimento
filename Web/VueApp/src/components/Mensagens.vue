@@ -35,7 +35,9 @@
         <b>De:</b> {{ MensagemSelecionada.De.Nome }} <br />
         <b>Para:</b> {{ MensagemSelecionada.Para.map((Para) => Para.Usuario.Nome).join(", ") }}
       </v-card-subtitle>
-      <v-card-text> <ejs-richtexteditor v-model="MensagemSelecionada.Texto" enableResize enableTabKey :enabled="false"></ejs-richtexteditor> </v-card-text>
+      <v-card-text>
+        <RichTextEditor v-model="MensagemSelecionada.Texto" ReadOnly></RichTextEditor>
+      </v-card-text>
     </v-card>
   </v-dialog>
 
@@ -51,7 +53,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <ejs-richtexteditor id="default" ref="rteInstance" v-model="MensagemSelecionada.Texto" :toolbarSettings="toolbarSettings" :enableResize="true" :enableTabKey="true"></ejs-richtexteditor>
+            <RichTextEditor v-model="MensagemSelecionada.Texto"></RichTextEditor>
           </v-col>
         </v-row>
       </v-card-text>
@@ -68,24 +70,6 @@
 <script setup>
 import { onMounted, inject } from "vue";
 import { useInterval } from "../composables/useInterval";
-
-import { provide } from 'vue';
-import { RichTextEditorComponent as EjsRichtexteditor, Toolbar, Link, Image, Table, HtmlEditor, QuickToolbar, Resize, PasteCleanup, FormatPainter, EmojiPicker} from "@syncfusion/ej2-vue-richtexteditor";
-const rteInstance = ref(null);
-const richtexteditor = [Toolbar, Link, Image, Table, HtmlEditor, QuickToolbar, Resize, PasteCleanup, FormatPainter, EmojiPicker];
-provide('richtexteditor', richtexteditor);
-
-const toolbarSettings = {
-    type: 'MultiRow',
-    items: ['Bold', 'Italic', 'Underline', 'StrikeThrough',
-    'FontName', 'FontSize', 'FontColor', 'BackgroundColor',
-    'LowerCase', 'UpperCase', 'SubScript', 'SuperScript','|',
-    'Formats', 'Alignments', 'OrderedList', 'UnorderedList', 'NumberFormatList', 'BulletFormatList', 'Outdent', 'Indent', '|',
-    'CreateLink', 'Image', '|',
-    'ClearFormat', 'Print', 'SourceCode', 'FullScreen', '|',
-    'Undo', 'Redo'
-  ]
-}
 
 const api = inject("SistemaApis");
 
@@ -167,4 +151,3 @@ onMounted(async () => {
   useInterval(GetMensagens, 15000).start();
 });
 </script>
-
