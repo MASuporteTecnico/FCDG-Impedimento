@@ -27,8 +27,9 @@
           <v-autocomplete :items="Empresas" v-model="Model.Empresa" label="Cliente"></v-autocomplete>
         </v-col>
       </v-row>
+      
     </v-form>
-    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="Model.Id == 0" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoChanges="NoChanges" :NoDelete="Model.Id == 0" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -39,7 +40,7 @@ definePage({
   },
 });
 
-import { ref, inject } from "vue";
+import { ref, inject, computed } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const router = useRouter();
@@ -48,15 +49,21 @@ const api = inject("SistemaApis");
 const store = useAppStore();
 
 let Model = ref({});
+let ModelOriginal = ref({});
 let Empresas = ref([]);
 
 const Permissao = computed(() => {
   return store.GetPermissao;
 });
 
+const NoChanges = computed(() => {
+  return (JSON.stringify(Model.value) === JSON.stringify(ModelOriginal.value));
+});
+
 async function Edit(id) {
   let response = await api.Usuario.Edit(id);
   Model.value = response.Dados;
+  ModelOriginal.value = response.Dados;
 }
 
 async function Save() {

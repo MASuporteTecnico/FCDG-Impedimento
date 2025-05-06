@@ -19,7 +19,14 @@ namespace MaSistemas.Business
 
     public override void Delete(SistemaUsuarioViewModel usuario, SistemaGrupoViewModel entity)
     {
-      throw new NotImplementedException();
+      SistemaGrupoModel model = ViewToEntity(entity, EnumOperacao.Excluir);
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
+
+      _context.SistemaGruposModel.Remove(model);
+      _context.SaveChanges();
+
     }
 
     public override void Dispose()
@@ -159,6 +166,9 @@ namespace MaSistemas.Business
     public override void Save(SistemaUsuarioViewModel colaborador, SistemaGrupoViewModel entity)
     {
       SistemaGrupoModel model = ViewToEntity(entity, EnumOperacao.Alterar);
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(colaborador);
 
       if (model.Id == 0)
       {

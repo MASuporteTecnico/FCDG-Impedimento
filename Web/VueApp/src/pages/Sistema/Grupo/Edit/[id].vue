@@ -35,7 +35,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoChanges="NoChanges" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -55,12 +55,17 @@ const store = useAppStore();
 const api = inject("SistemaApis");
 
 let Model = ref({});
+let ModelOriginal = ref({});
 let Usuarios = ref([]);
 let Menus = ref([]);
 let Membro = ref(null);
 
 const Permissao = computed(() => {
   return store.GetPermissao;
+});
+
+const NoChanges = computed(() => {
+  return (JSON.stringify(Model.value) === JSON.stringify(ModelOriginal.value));
 });
 
 const DataHeader = [
@@ -92,6 +97,7 @@ const GridData = computed(() => {
 async function Edit(id) {
   let response = await api.Grupo.Edit(id);
   Model.value = response.Dados;
+  ModelOriginal.value = response.Dados;
 }
 
 async function Save() {

@@ -20,6 +20,7 @@ namespace MaSistemas.Business
     public override void Delete(SistemaUsuarioViewModel usuario, SistemaPermissaoViewModel entity)
     {
       SistemaPermissaoModel model = ViewToEntity(entity, EnumOperacao.Excluir);
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
       _context.SistemaPermissoesModel.Remove(model);
 
       _context.SaveChanges();
@@ -49,6 +50,7 @@ namespace MaSistemas.Business
 
     public override void Save(SistemaUsuarioViewModel usuario, SistemaPermissaoViewModel entity)
     {
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
 
       //Para que seja setado apenas o grupo ou o usuário, nunca os dois
       if (entity.PermissaoDeGrupoUsuario == true)

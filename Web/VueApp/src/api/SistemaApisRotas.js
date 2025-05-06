@@ -50,6 +50,9 @@ const SistemaApisRotas = {
     Edit: "/api/Sistema/Parametro/Edit",
     Save: "/api/Sistema/Parametro/Save",
   },
+  Auditoria: {
+    Index: "/api/Sistema/Auditoria/Index",
+  },
   Arquivo: {
     Upload: "/api/Sistema/Arquivo/Upload",
     Download: "/api/Sistema/Arquivo/Download",

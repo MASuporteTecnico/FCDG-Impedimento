@@ -34,6 +34,10 @@ namespace MaSistemas.Business
       SistemaUsuarioValidator validador = new();
       validador.ValidaExclusao(view);
       SistemaUsuarioModel model = ViewToEntity(view, EnumOperacao.Excluir);
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
+
       _context.SistemaUsuariosModel.Remove(model);
       _context.SaveChanges();
     }
@@ -64,7 +68,6 @@ namespace MaSistemas.Business
 
     public override List<SistemaUsuarioViewModel> Index(ref PaginacaoViewModel paginacao)
     {
-
       //Ajuste de Filtro e Ordenação
       MontaOrderBylist<SistemaUsuarioModel> odbList = new();
       AplicaOrderBy<SistemaUsuarioModel> appOdb = new();
@@ -127,6 +130,10 @@ namespace MaSistemas.Business
 
       //Validador de cadastro de Usuário
       SistemaUsuarioValidator validator = new();
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(colaborador);
+
       if (entity.Id == 0)
       {
         validator.ValidaInclusao(entity);
@@ -144,7 +151,7 @@ namespace MaSistemas.Business
     }
 
     public override SistemaUsuarioViewModel SelectOne(Expression<Func<SistemaUsuarioModel, bool>> pCondicao)
-    {
+    {      
       SistemaUsuarioModel model = _context.SistemaUsuariosModel
                                   .Where(pCondicao)
                                   .Include(x => x.Empresa)

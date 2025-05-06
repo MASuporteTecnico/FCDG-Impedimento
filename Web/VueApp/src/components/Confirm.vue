@@ -6,11 +6,11 @@
       <v-card-text class="text-h2 pa-12">
         <v-row>
           <v-col v-if="!NoCancel" >
-            <v-btn color="error" @click="returnFalse" block>Não</v-btn>
+            <v-btn color="error" @click.stop="returnFalse" @keydown.enter.native.stop.prevent="returnFalse" block>Não</v-btn>
           </v-col>
           <v-col v-if="!NoCancel"> </v-col>
           <v-col>
-            <v-btn color="success" @click="returnTrue" block> {{ ConfirmTxt || 'Sim'}}</v-btn>
+            <v-btn color="success" @click.stop="returnTrue" @keydown.enter.native.stop.prevent="returnTrue" block> {{ ConfirmTxt || 'Sim'}}</v-btn>
           </v-col>
         </v-row>
       </v-card-text>

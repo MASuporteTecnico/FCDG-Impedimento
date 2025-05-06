@@ -16,7 +16,7 @@
         <v-col> <VCurrencyField v-model="Model.ValorContrato" label="Valor Contrato"></VCurrencyField> </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
+    <SaveDelCancel :ReadOnly="Permissao.SomenteLeitura" :NoChanges="NoChanges" :NoDelete="(Model.Id == 0)" v-on:save="Save()" v-on:cancel="Index()" v-on:delete="Delete()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -39,13 +39,22 @@ const Permissao = computed(() => {
   return store.GetPermissao;
 });
 
+const NoChanges = computed(() => {
+  return (JSON.stringify(Model.value) === JSON.stringify(ModelOriginal.value));
+});
+
 let Model = ref({
+  DataContrato: new Date(),
+});
+
+let ModelOriginal = ref({
   DataContrato: new Date(),
 });
 
 async function Edit(id) {
   let response = await api.Empresa.Edit(id);
-  Model.value = response.Dados;
+  Model.value = {... response.Dados};
+  ModelOriginal.value = {... Model.value};
 }
 
 async function Save() {

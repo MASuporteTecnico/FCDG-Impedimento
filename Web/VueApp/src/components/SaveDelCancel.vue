@@ -6,7 +6,7 @@
         <v-row>
           <v-col cols="2" v-if="!ReadOnly && !NoDelete"> <v-btn block color="error" @click="ShowConfirmaExcluir = true">Excluir</v-btn> </v-col>
           <v-spacer></v-spacer>
-          <v-col cols="3" v-if="!NoCancel"><v-btn block color="warning" @click="(ReadOnly)? returnCancel() :ShowConfirmaCancelar = true">Cancelar</v-btn> </v-col>
+          <v-col cols="3" v-if="!NoCancel"><v-btn block color="warning" @click="(ReadOnly || NoChanges)? returnCancel() :ShowConfirmaCancelar = true">Cancelar</v-btn> </v-col>
           <v-col cols="3" v-if="!ReadOnly && !NoSave"> <v-btn block color="primary" @click="ShowConfirmaSalvar = true">Salvar</v-btn> </v-col>
         </v-row>
       </v-col>
@@ -26,7 +26,8 @@ defineProps({
   ReadOnly: { type: Boolean, default: false },
   NoDelete: { type: Boolean, default: false },
   NoCancel: { type: Boolean, default: false },
-  NoSave: { type: Boolean, default: false }
+  NoSave: { type: Boolean, default: false },
+  NoChanges: { type: Boolean, default: false }
 });
 
 const emit = defineEmits(["cancel", "save", "delete"]);

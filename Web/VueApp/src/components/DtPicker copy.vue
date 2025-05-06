@@ -53,6 +53,6 @@ watch(dataTxt, (newVal, oldVal) => {
   if ( (newVal !== oldVal) && (newVal.length == 10)) {
     emit("update:modelValue", new Date(formatDateUS(dataTxt)));
     dataPicker.value = new Date(formatDateUS(dataTxt));
-  } else emit("update:modelValue", null);
+  } else {emit("update:modelValue", null);}
 });
 </script>

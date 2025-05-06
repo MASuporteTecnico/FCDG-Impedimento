@@ -26,18 +26,23 @@
       "runtimeArgs": [
         "run",
         "dev"
-      ]
+      ],
+      "serverReadyAction": {
+        "action": "startDebugging",
+        "pattern": "Local:   (http?://\\S+|[0-9]+)",
+        "name": "FrontEndDebug",
+        "killOnServerStop": true,
+      }
     },
     {
       "name": "FrontEndDebug",
       "type": "chrome",
       "request": "launch",
-      "url": "http://localhost:8093",
+      "url": "http://localhost:8093/login?dominio=masuporte.com.br",
       "webRoot": "${workspaceFolder}/Web/VueApp/src",
       "sourceMaps": true,
       "disableNetworkCache": true,
       "trace": true,
-      "preLaunchTask": "Sleepdelay",
       "skipFiles": [
         "<node_internals>/**",
         "node_modules/**"
@@ -49,8 +54,7 @@
       "name": "Launch",
       "configurations": [
         "BackEnd",
-        "FrontEnd",
-        "FrontEndDebug"
+        "FrontEnd"
       ],
       "presentation": {
         "hidden": false,

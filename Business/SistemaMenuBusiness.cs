@@ -140,6 +140,9 @@ namespace MaSistemas.Business
     {
       SistemaMenuModel model = ViewToEntity(entity,EnumOperacao.Alterar);
 
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(colaborador);
+
       if(model.Id == 0)
       {
         _context.SistemaMenusModel.Add(model);

@@ -38,8 +38,10 @@ router.isReady().then(() => {
 })
 
 router.beforeEach((to, from, next) => {
-
+  
   const store = useAppStore();
+  store.SetIsLoading(true);
+
   store.CountDownLogoffReset = !store.CountDownLogoffReset;
   const Rotas = store.GetRotas;
 
@@ -60,18 +62,21 @@ router.beforeEach((to, from, next) => {
 
   //Em rotas públicas, libera acesso
   if (!requerAutenticacao) {
+    store.SetIsLoading(false);
     next();
     return;
   }
 
   //Em rotas não encontradas, libera acesso
   if (naoEncontrada) {
+    store.SetIsLoading(false);
     next();
     return;
   }
 
   //Em rotas liberadas, e com usuário logado, é liberado
   if (ehRotaLiberada && usuarioLogado) {
+    store.SetIsLoading(false);
     next();
     return;
   }
@@ -79,11 +84,13 @@ router.beforeEach((to, from, next) => {
   //Verifica se o usiários está logado em rotas que requerem autenticação
   if (requerAutenticacao && !usuarioLogado) {
     //Se não estiver logado, redireciona para págian de login
+    store.SetIsLoading(false);
     next('/login');
     return;
   } else {
     //Caso esteja indo para uma rota sem permissão, será redirecionado
     if (Rota.length == 0) {
+      store.SetIsLoading(false);
       next('/negado');
       return;
     } else {
@@ -108,6 +115,7 @@ router.beforeEach((to, from, next) => {
       }
 
       store.SetPermissao(Permissao);
+      store.SetIsLoading(false);
 
       next();
       return;

@@ -21,6 +21,10 @@ namespace MaSistemas.Business
       EmpresaValidator validador = new();
       validador.ValidaExclusao(view);
       EmpresaModel model = ViewToEntity(view, EnumOperacao.Excluir);
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
+
       _context.EmpresasModel.Remove(model);
       _context.SaveChanges();
     }
@@ -90,6 +94,10 @@ namespace MaSistemas.Business
     {
       EmpresaModel model;
       EmpresaValidator validador = new();
+      
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(colaborador);
+
       if (view.Id == 0)
       {
         validador.ValidaInclusao(view);

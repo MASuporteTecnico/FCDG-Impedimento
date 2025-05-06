@@ -68,7 +68,7 @@
         </v-col>
       </v-row>
     </v-form>
-    <SaveDelCancel NoDelete :ReadOnly="Permissao.SomenteLeitura"  v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
+    <SaveDelCancel NoDelete :NoChanges="NoChanges" :ReadOnly="Permissao.SomenteLeitura"  v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -84,6 +84,7 @@ import { useAppStore } from "@/stores/app";
 
 const api = inject("SistemaApis");
 let Model = ref({});
+let ModelOriginal = ref({});
 let Item = ref({});
 let ItemRoot = ref(false);
 let MenuSelecionado = ref([]);
@@ -93,6 +94,10 @@ const store = useAppStore();
 
 const Permissao = computed(() => {
   return store.GetPermissao;
+});
+
+const NoChanges = computed(() => {
+  return (JSON.stringify(Model.value) === JSON.stringify(ModelOriginal.value));
 });
 
 const ItemSelecionado = computed(() => {
@@ -115,6 +120,7 @@ async function Edit() {
   Item.value = {};
   let response = await api.Menu.Edit(1);
   Model.value = response.Dados;
+  ModelOriginal.value = response.Dados;
 }
 
 async function Save() {
@@ -180,10 +186,9 @@ function NovoItemMenu(item) {
 
 function MudaDivisor(data)
 {
-  
   MenuAtivado.value[0].Icone = "mdi-ray-start-end";  
   MenuAtivado.value[0].Nome = "<divisor>";
-
+  MenuAtivado.value[0].Rota = "";
 }
 
 function ExcluirItemMenu(item) {

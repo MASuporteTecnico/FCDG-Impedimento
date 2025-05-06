@@ -47,7 +47,7 @@
         </v-card-text>
       </v-card>
     </v-form>
-    <SaveDelCancel NoDelete :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
+    <SaveDelCancel NoDelete :NoChanges="NoChanges" :ReadOnly="Permissao.SomenteLeitura" v-on:save="Save()" v-on:cancel="Edit()"></SaveDelCancel>
   </v-container>
 </template>
 
@@ -64,15 +64,21 @@ import { useAppStore } from "@/stores/app";
 const api = inject("SistemaApis");
 const store = useAppStore();
 let Model = ref({});
+let ModelOriginal = ref({});
 let TabParametros = ref(null);
 
 const Permissao = computed(() => {
   return store.GetPermissao;
 });
 
+const NoChanges = computed(() => {
+  return (JSON.stringify(Model.value) === JSON.stringify(ModelOriginal.value));
+});
+
 async function Edit() {
   let response = await api.Parametro.Edit(1);
   Model.value = response.Dados;
+  ModelOriginal.value = response.Dados;
 }
 
 async function Save() {

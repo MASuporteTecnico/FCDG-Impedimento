@@ -1,18 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 
 namespace MaSistemas.Model;
 
 public class MaSistemasContext : DbContext
 {
-  public MaSistemasContext(DbContextOptions<MaSistemasContext> options)
-    : base(options)
+  //Utilizado para auditoria
+  public SistemaUsuarioModel Operador { get; set; } = default!;
+
+  //Tabelas do DB
+  public DbSet<SistemaMenuModel> SistemaMenusModel { get; set; } = default!;
+  public DbSet<SistemaMensagemModel> SistemaMensagensModel { get; set; } = default!;
+  public DbSet<SistemaMensagemParaModel> SistemaMensagensParaModel { get; set; } = default!;
+  public DbSet<SistemaMensagemCaixaModel> SistemaMensagensCaixaModel { get; set; } = default!;
+  public DbSet<SistemaPermissaoModel> SistemaPermissoesModel { get; set; } = default!;
+  public DbSet<SistemaUsuarioModel> SistemaUsuariosModel { get; set; } = default!;
+  public DbSet<SistemaParametroModel> SistemaParametrosModel { get; set; } = default!;
+  public DbSet<SistemaGrupoModel> SistemaGruposModel { get; set; } = default!;
+  public DbSet<SistemaGrupoUsuarioModel> SistemaGrupoUsuariosModel { get; set; } = default!;
+  public DbSet<SistemaGrupoMenuModel> SistemaGrupoMenusModel { get; set; } = default!;
+  public DbSet<SistemaAuditoriaModel> SistemaAuditoriasModel { get; set; } = default!;
+  public DbSet<EmpresaModel> EmpresasModel { get; set; } = default!;
+
+
+  public MaSistemasContext(DbContextOptions<MaSistemasContext> options) : base(options)
   {
+    //
   }
 
   public MaSistemasContext()
   {
-
+    //
   }
 
   public static MaSistemasContext Create()
@@ -52,6 +71,10 @@ public class MaSistemasContext : DbContext
       case "SQLTE":
         connectionStrings = configuration["ConnectionStrings:SQLTE"];
         optionsBuilder.UseSqlite(connectionStrings);
+
+        //Mostrar o SQL Executado no console - PARA MSSQL SERVER
+        //Desativar quandao  em produção
+        /* optionsBuilder.UseSqlServer(connectionStrings).LogTo(s => System.Diagnostics.Debug.WriteLine(s)); */
         break;
 
       default:
@@ -59,23 +82,101 @@ public class MaSistemasContext : DbContext
     }
   }
 
-  public DbSet<SistemaMenuModel> SistemaMenusModel { get; set; } = default!;
-  public DbSet<SistemaMensagemModel> SistemaMensagensModel { get; set; } = default!;
-  public DbSet<SistemaMensagemParaModel> SistemaMensagensParaModel { get; set; } = default!;
-  public DbSet<SistemaMensagemCaixaModel> SistemaMensagensCaixaModel { get; set; } = default!;
-  public DbSet<SistemaPermissaoModel> SistemaPermissoesModel { get; set; } = default!;
-  public DbSet<SistemaUsuarioModel> SistemaUsuariosModel { get; set; } = default!;
-  public DbSet<SistemaParametroModel> SistemaParametrosModel { get; set; } = default!;
-  public DbSet<SistemaGrupoModel> SistemaGruposModel { get; set; } = default!;
-  public DbSet<SistemaGrupoUsuarioModel> SistemaGrupoUsuariosModel { get; set; } = default!;
-  public DbSet<SistemaGrupoMenuModel> SistemaGrupoMenusModel { get; set; } = default!;
-  public DbSet<EmpresaModel> EmpresasModel { get; set; } = default!;
-
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    modelBuilder.Entity<SistemaAuditoriaModel>().Property(x => x.Operacao).HasConversion<string>();
     base.OnModelCreating(modelBuilder);
-
     modelBuilder.Seed();
+  }
+
+  public override int SaveChanges()
+  {
+    List<SistemaAuditoriaModel> changes = GetChanges();
+    int result = base.SaveChanges();
+
+    if (changes.Count > 0)
+    {
+      SistemaAuditoriasModel.AddRange(changes);
+      base.SaveChanges(); // Salva os logs primeiro
+    }
+
+    return result;
+  }
+
+  private List<SistemaAuditoriaModel> GetChanges()
+  {
+    var changeLogs = new List<SistemaAuditoriaModel>();
+
+    foreach (var entry in ChangeTracker.Entries())
+    {
+      if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
+      {
+        var entityName = entry.Entity.GetType().Name;
+        var entityId = entry.OriginalValues["Id"] ?? "0"; // Ajuste para sua PK
+        var (oldValues, newValues) = GetEntityChanges(entry);
+
+        EnumOperacao operacao = entry.State switch
+        {
+          EntityState.Added => EnumOperacao.Incluir,
+          EntityState.Modified => EnumOperacao.Alterar,
+          EntityState.Deleted => EnumOperacao.Excluir,
+          _ => 0
+        };
+
+        if (oldValues.Count > 0 || newValues.Count > 0)
+        {
+          changeLogs.Add(new SistemaAuditoriaModel
+          {
+            Classe = entityName,
+            ClasseId = (operacao == EnumOperacao.Incluir) ? 0 : Convert.ToInt32(entityId),
+            ValorAnterior = System.Text.Json.JsonSerializer.Serialize(oldValues),
+            ValorNovo = System.Text.Json.JsonSerializer.Serialize(newValues),
+            DataAlteracao = DateTime.UtcNow,
+            Operacao = operacao,
+            UsuarioId = Operador.Id
+          });
+        }
+      }
+    }
+
+    return changeLogs;
+  }
+
+  private (Dictionary<string, object> oldValues, Dictionary<string, object> newValues) GetEntityChanges(EntityEntry entry)
+  {
+    var oldValues = new Dictionary<string, object>();
+    var newValues = new Dictionary<string, object>();
+
+    if (entry.State == EntityState.Added)
+    {
+      foreach (var prop in entry.CurrentValues.Properties)
+      {
+        newValues[prop.Name] = entry.CurrentValues[prop];
+      }
+    }
+    else if (entry.State == EntityState.Deleted)
+    {
+      foreach (var prop in entry.OriginalValues.Properties)
+      {
+        oldValues[prop.Name] = entry.OriginalValues[prop];
+      }
+    }
+    else if (entry.State == EntityState.Modified)
+    {
+      foreach (var prop in entry.OriginalValues.Properties)
+      {
+        var originalValue = entry.OriginalValues[prop];
+        var currentValue = entry.CurrentValues[prop];
+
+        if (!Equals(originalValue, currentValue))
+        {
+          oldValues[prop.Name] = originalValue;
+          newValues[prop.Name] = currentValue;
+        }
+      }
+    }
+
+    return (oldValues, newValues);
   }
 }
 
@@ -121,7 +222,7 @@ public static class ModelBuilderExtensions
       Admin = true
     };
 
-    List<SistemaMenuModel> SeedMenu = new () {
+    List<SistemaMenuModel> SeedMenu = new() {
       //Raiz do Menu
       new () { Id = 1, MenuPaiId = null, Nome = "Menu Sistema", Rota = ".", Icone = ".", Divisor = false, Ordem = 0, Ativo = true},
 

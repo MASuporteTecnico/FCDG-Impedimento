@@ -67,6 +67,6 @@ export default defineConfig({
   build: {
     outDir: '../wwwroot',
     emptyOutDir: true, // also necessary
-    sourcemap: true
+    //sourcemap: true
   },
 })

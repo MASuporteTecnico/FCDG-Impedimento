@@ -221,6 +221,12 @@ const SistemaApis = {
     },
   },
 
+  Auditoria: {
+    async Index(paginacao) {
+      return await Index(`${SistemaApisRotas.Auditoria.Index}`, paginacao);
+    }
+  },
+
   Menu: {
     async Edit(id) {
       return await Edit(`${SistemaApisRotas.Menu.Edit}`, `${id}`);
