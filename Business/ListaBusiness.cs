@@ -45,6 +45,23 @@ namespace MaSistemas.Business
       return view.OrderBy(x => x.Nome).ToListAsync();
     }
 
+    public Task<List<AdvogadoViewModel>> Advogados()
+    {
+      IQueryable<AdvogadoModel> model = _context.AdvogadosModel;
+
+      IQueryable<AdvogadoViewModel> view = (
+                from i in model
+                select new AdvogadoViewModel
+                {
+                  Id = i.Id,
+                  Nome = i.Nome,
+                  Sigla = i.Sigla,
+                }
+            );
+
+      return view.OrderBy(x => x.Nome).ToListAsync();
+    }
+
     public Task<List<ListaViewModel>> GruposUsuarios()
     {
       IQueryable<SistemaGrupoModel> model = _context.SistemaGruposModel.Where(x => x.Ativo && !x.GrupoDeMenu && !x.UsoInterno);

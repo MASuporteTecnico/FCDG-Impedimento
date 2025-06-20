@@ -1,4 +1,10 @@
-const SistemaApisRotas = { 
+const SistemaApisRotas = {
+  Advogado: {
+    Index: "/api/Cadastro/Advogado/Index",
+    Edit: "/api/Cadastro/Advogado/Edit",
+    Save: "/api/Cadastro/Advogado/Save",
+    Delete: "/api/Cadastro/Advogado/Delete",
+  },
   Usuario: {
     Index: "/api/Sistema/Usuario/Index",
     Edit: "/api/Sistema/Usuario/Edit",
@@ -56,7 +62,7 @@ const SistemaApisRotas = {
   Arquivo: {
     Upload: "/api/Sistema/Arquivo/Upload",
     Download: "/api/Sistema/Arquivo/Download",
-  }
-}
+  },
+};
 
 export default SistemaApisRotas;

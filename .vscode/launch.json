@@ -29,7 +29,7 @@
       ],
       "serverReadyAction": {
         "action": "startDebugging",
-        "pattern": "Local:   (http?://\\S+|[0-9]+)",
+        "pattern": "(http?://\\S+|[0-9]+)",
         "name": "FrontEndDebug",
         "killOnServerStop": true,
       }

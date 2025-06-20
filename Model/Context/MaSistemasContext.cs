@@ -10,6 +10,11 @@ public class MaSistemasContext : DbContext
   public SistemaUsuarioModel Operador { get; set; } = default!;
 
   //Tabelas do DB
+  public DbSet<AdvogadoModel> AdvogadosModel   { get; set; } = default!;
+  public DbSet<ImpedimentoModel> ImpedimentosModel { get; set; } = default!;
+  public DbSet<ImpedimentoVerificacaoModel> ImpedimentoVerificacaoModel { get; set; } = default!;
+  public DbSet<EmpresaModel> EmpresasModel { get; set; } = default!;
+
   public DbSet<SistemaMenuModel> SistemaMenusModel { get; set; } = default!;
   public DbSet<SistemaMensagemModel> SistemaMensagensModel { get; set; } = default!;
   public DbSet<SistemaMensagemParaModel> SistemaMensagensParaModel { get; set; } = default!;
@@ -21,7 +26,6 @@ public class MaSistemasContext : DbContext
   public DbSet<SistemaGrupoUsuarioModel> SistemaGrupoUsuariosModel { get; set; } = default!;
   public DbSet<SistemaGrupoMenuModel> SistemaGrupoMenusModel { get; set; } = default!;
   public DbSet<SistemaAuditoriaModel> SistemaAuditoriasModel { get; set; } = default!;
-  public DbSet<EmpresaModel> EmpresasModel { get; set; } = default!;
 
 
   public MaSistemasContext(DbContextOptions<MaSistemasContext> options) : base(options)
@@ -46,6 +50,7 @@ public class MaSistemasContext : DbContext
     string ServerType = configuration["ConnectionStringsType"];
 
     string connectionStrings;
+
 
     switch (ServerType)
     {
@@ -107,37 +112,41 @@ public class MaSistemasContext : DbContext
   {
     var changeLogs = new List<SistemaAuditoriaModel>();
 
-    foreach (var entry in ChangeTracker.Entries())
+    if (changeLogs.Count > 0)
     {
-      if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
+      foreach (var entry in ChangeTracker.Entries())
       {
-        var entityName = entry.Entity.GetType().Name;
-        var entityId = entry.OriginalValues["Id"] ?? "0"; // Ajuste para sua PK
-        var (oldValues, newValues) = GetEntityChanges(entry);
-
-        EnumOperacao operacao = entry.State switch
+        if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
         {
-          EntityState.Added => EnumOperacao.Incluir,
-          EntityState.Modified => EnumOperacao.Alterar,
-          EntityState.Deleted => EnumOperacao.Excluir,
-          _ => 0
-        };
+          var entityName = entry.Entity.GetType().Name;
+          var entityId = entry.OriginalValues["Id"] ?? "0"; // Ajuste para sua PK
+          var (oldValues, newValues) = GetEntityChanges(entry);
 
-        if (oldValues.Count > 0 || newValues.Count > 0)
-        {
-          changeLogs.Add(new SistemaAuditoriaModel
+          EnumOperacao operacao = entry.State switch
           {
-            Classe = entityName,
-            ClasseId = (operacao == EnumOperacao.Incluir) ? 0 : Convert.ToInt32(entityId),
-            ValorAnterior = System.Text.Json.JsonSerializer.Serialize(oldValues),
-            ValorNovo = System.Text.Json.JsonSerializer.Serialize(newValues),
-            DataAlteracao = DateTime.UtcNow,
-            Operacao = operacao,
-            UsuarioId = Operador.Id
-          });
+            EntityState.Added => EnumOperacao.Incluir,
+            EntityState.Modified => EnumOperacao.Alterar,
+            EntityState.Deleted => EnumOperacao.Excluir,
+            _ => 0
+          };
+
+          if (oldValues.Count > 0 || newValues.Count > 0)
+          {
+            changeLogs.Add(new SistemaAuditoriaModel
+            {
+              Classe = entityName,
+              ClasseId = (operacao == EnumOperacao.Incluir) ? 0 : Convert.ToInt32(entityId),
+              ValorAnterior = System.Text.Json.JsonSerializer.Serialize(oldValues),
+              ValorNovo = System.Text.Json.JsonSerializer.Serialize(newValues),
+              DataAlteracao = DateTime.UtcNow,
+              Operacao = operacao,
+              UsuarioId = Operador.Id
+            });
+          }
         }
       }
     }
+    
 
     return changeLogs;
   }

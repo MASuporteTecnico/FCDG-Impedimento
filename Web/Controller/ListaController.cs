@@ -32,6 +32,17 @@ public class ListaController : ControllerBase
     return View;
   }
 
+  [Route("Advogados")]
+  [HttpGet]
+  public async Task<IEnumerable<AdvogadoViewModel>> Advogados()
+  {
+    ListaBusiness Business = new();
+    List<AdvogadoViewModel> View = new();
+    View = await Task.Run(() => Business.Advogados());
+
+    return View;
+  }
+
   [Route("GruposUsuarios")]
   [HttpGet]
   public async Task<IEnumerable<ListaViewModel>> GruposUsuarios()

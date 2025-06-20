@@ -1,6 +1,6 @@
 import axios from 'axios';
 import SistemaApisRotas from './SistemaApisRotas';
-import Router from '../router'; 
+import Router from '../router';
 import { useAppStore } from "@/stores/app";
 
 //Pare requsições que não disparam o Loading
@@ -112,7 +112,7 @@ const SistemaApis = {
     },
 
     async Edit(id) {
-      return await Edit(`${SistemaApisRotas.Usuario.Edit}`,`${id}`);
+      return await Edit(`${SistemaApisRotas.Usuario.Edit}`, `${id}`);
     },
 
     async Save(dados) {
@@ -133,7 +133,10 @@ const SistemaApis = {
 
     async Login(usuario) {
       try {
-        const response = await axios.post(SistemaApisRotas.Usuario.Login, usuario);
+        const response = await axios.post(
+          SistemaApisRotas.Usuario.Login,
+          usuario
+        );
 
         if (response.Sucesso == false) {
           throw new Error(response.Mensagem);
@@ -224,7 +227,7 @@ const SistemaApis = {
   Auditoria: {
     async Index(paginacao) {
       return await Index(`${SistemaApisRotas.Auditoria.Index}`, paginacao);
-    }
+    },
   },
 
   Menu: {
@@ -234,6 +237,24 @@ const SistemaApis = {
 
     async Save(dados) {
       return await Save(`${SistemaApisRotas.Menu.Save}`, dados);
+    },
+  },
+
+  Advogado: {
+    async Index(paginacao) {
+      return await Index(`${SistemaApisRotas.Advogado.Index}`, paginacao);
+    },
+
+    async Edit(id) {
+      return await Edit(`${SistemaApisRotas.Advogado.Edit}`, `${id}`);
+    },
+
+    async Save(dados) {
+      return await Save(`${SistemaApisRotas.Advogado.Save}`, dados);
+    },
+
+    async Delete(dados) {
+      return await Delete(`${SistemaApisRotas.Advogado.Delete}`, dados);
     },
   },
 
@@ -275,11 +296,10 @@ const SistemaApis = {
     async Menus() {
       return await GetLista(`${SistemaApisRotas.Lista.Menus}`);
     },
-
   },
 
   // Rotas de Api para Parâmetros
-  Parametro :{
+  Parametro: {
     async Edit(id) {
       return await Edit(`${SistemaApisRotas.Parametro.Edit}`, `${id}`);
     },
@@ -298,8 +318,7 @@ const SistemaApis = {
     async Download(dados) {
       return await Save(`${SistemaApisRotas.Arquivo.Download}`, dados);
     },
-  }
-  
+  },
 };
 
 export default SistemaApis;

@@ -7,12 +7,16 @@ import Vue from '@vitejs/plugin-vue'
 import VueRouter from 'unplugin-vue-router/vite'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
+
 // Utilities
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // AQUI: Adicionada a propriedade para alterar o diretório de cache
+  cacheDir: 'd:/temp/vite-cache',
+
   plugins: [
     VueRouter(),
     Layouts(),
