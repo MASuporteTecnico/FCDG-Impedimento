@@ -1,6 +1,4 @@
-# MaSistemas
-
-## Modelo padrão para os sistemas da M&A
+# FCDG - Impedimento
 
 ![Static Badge](https://img.shields.io/badge/masuporte-MaSistemas-blue)
 
