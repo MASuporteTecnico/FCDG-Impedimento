@@ -63,8 +63,7 @@ const Permissao = computed(() => {
 
 const Header = [
   { title: "Nome", key: "Id", sortable: true },
-  // { title: "Cpf/Cnpj", key: "CpfCnpj", sortable: false },
-  // { title: "Data Contrato", key: "DataContrato", sortable: false },
+  // ==> Aqui entra o nome do Advogado Responsável
   { title: "", key: "Action", width: "80px"  },
 ];
 

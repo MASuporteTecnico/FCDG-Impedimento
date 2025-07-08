@@ -66,7 +66,9 @@ namespace MaSistemas.Business
                 AdvogadoId = u.AdvogadoId,
                 Objeto = u.Objeto,
                 ParteA = u.ParteA,
-                ParteB = u.ParteB                
+                ParteB = u.ParteB
+                // ==> Aqui vai entrar o Nome do Advogado Responsável
+                // ==> Aqui vai entrar as Respostas dos Advogados
               }).ToList();
 
 
