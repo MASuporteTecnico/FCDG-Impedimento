@@ -5,6 +5,12 @@ const SistemaApisRotas = {
     Save: "/api/Cadastro/Advogado/Save",
     Delete: "/api/Cadastro/Advogado/Delete",
   },
+  Impedimento: {
+    Index: "/api/Impedimento/Index",
+    Edit: "/api/Impedimento/Edit",
+    Save: "/api/Impedimento/Save",
+    Delete: "/api/Impedimento/Delete",
+  },
   Usuario: {
     Index: "/api/Sistema/Usuario/Index",
     Edit: "/api/Sistema/Usuario/Edit",

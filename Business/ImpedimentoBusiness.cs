@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using MaSistemas.Model;
 using MaSistemas.ViewModel;
+using Microsoft.EntityFrameworkCore;
 using Omu.ValueInjecter;
 
 namespace MaSistemas.Business
@@ -16,34 +17,9 @@ namespace MaSistemas.Business
       _context = new MaSistemasContext();
     }
 
-    public override void Delete(SistemaUsuarioViewModel usuario, ImpedimentoViewModel view)
-    {
-      ImpedimentoValidator validador = new();
-      validador.ValidaExclusao(view);
-      ImpedimentoModel model = ViewToEntity(view, EnumOperacao.Excluir);
-
-      //Para Auditoria
-      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
-
-      _context.ImpedimentosModel.Remove(model);
-      _context.SaveChanges();
-    }
-
     public override void Dispose()
     {
       _context.Dispose();
-    }
-
-    public override ImpedimentoViewModel EntityToView(ImpedimentoModel entity)
-    {
-      if (entity == null)
-      {
-        return new ImpedimentoViewModel();
-      }
-
-      ImpedimentoViewModel view = (ImpedimentoViewModel)(new ImpedimentoViewModel()).InjectFrom(entity);
-
-      return view;
     }
 
     public override List<ImpedimentoViewModel> Index(ref PaginacaoViewModel paginacao)
@@ -78,9 +54,21 @@ namespace MaSistemas.Business
       if (oderByExp.Length > 0)
         model = appOdb.Ordenar(model, oderByExp);
 
+      // view = (from u in model
+      //         select (ImpedimentoViewModel)new ImpedimentoViewModel().InjectFrom(u)
+      //         ).ToList();
+
       view = (from u in model
-              select (ImpedimentoViewModel)new ImpedimentoViewModel().InjectFrom(u)
-              ).ToList();
+              select new ImpedimentoViewModel
+              {
+                Id = u.Id,
+                DataImpedimento = u.DataImpedimento,
+                AdvogadoId = u.AdvogadoId,
+                Objeto = u.Objeto,
+                ParteA = u.ParteA,
+                ParteB = u.ParteB                
+              }).ToList();
+
 
       paginacao.itemsLength = view.Count;
       paginacao.pageCount = Convert.ToInt32(Math.Ceiling((Decimal)paginacao.itemsLength / paginacao.itemsPerPage));
@@ -94,7 +82,7 @@ namespace MaSistemas.Business
     {
       ImpedimentoModel model;
       ImpedimentoValidator validador = new();
-      
+
       //Para Auditoria
       _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(colaborador);
 
@@ -110,10 +98,22 @@ namespace MaSistemas.Business
         model = ViewToEntity(view, EnumOperacao.Alterar);
         _context.ImpedimentosModel.Attach(model);
       }
-      
+
       _context.SaveChanges();
     }
 
+    public override void Delete(SistemaUsuarioViewModel usuario, ImpedimentoViewModel view)
+    {
+      ImpedimentoValidator validador = new();
+      validador.ValidaExclusao(view);
+      ImpedimentoModel model = ViewToEntity(view, EnumOperacao.Excluir);
+
+      //Para Auditoria
+      _context.Operador = (SistemaUsuarioModel)(new SistemaUsuarioModel()).InjectFrom(usuario);
+
+      _context.ImpedimentosModel.Remove(model);
+      _context.SaveChanges();
+    }
     public override ImpedimentoViewModel SelectOne(Expression<Func<ImpedimentoModel, bool>> pCondicao)
     {
       ImpedimentoModel model = _context.ImpedimentosModel
@@ -134,6 +134,20 @@ namespace MaSistemas.Business
       ImpedimentoModel model = _context.ImpedimentosModel.Where(x => x.Id == view.Id).FirstOrDefault() ?? new ImpedimentoModel();
       model.InjectFrom(view);
       return model;
+
     }
+
+    public override ImpedimentoViewModel EntityToView(ImpedimentoModel entity)
+    {
+      if (entity == null)
+      {
+        return new ImpedimentoViewModel();
+      }
+
+      ImpedimentoViewModel view = (ImpedimentoViewModel)(new ImpedimentoViewModel()).InjectFrom(entity);
+      view.AdvogadoResponsavel = (AdvogadoViewModel)new AdvogadoViewModel().InjectFrom(view.AdvogadoId);
+      return view;
+    }
+
   }
 }

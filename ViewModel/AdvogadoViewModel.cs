@@ -13,9 +13,9 @@ namespace MaSistemas.ViewModel
     public string Sigla { get; set; }
 
     // Navegação: impedimentos do qual é responsável
-    public virtual ICollection<ImpedimentoViewModel> ImpedimentosResponsavel { get; set; }
+    //public virtual ICollection<ImpedimentoViewModel> Advogado { get; set; }
 
     // Navegação: verificações que este advogado realizou
-    public virtual ICollection<ImpedimentoVerificacaoViewModel> Verificacoes { get; set; }
+    //public virtual ICollection<ImpedimentoVerificacaoViewModel> Verificacoes { get; set; }
   }
 }

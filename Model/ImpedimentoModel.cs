@@ -11,10 +11,12 @@ namespace MaSistemas.Model
     public DateOnly DataImpedimento { get; set; }
     public int AdvogadoId { get; set; }
     public string Objeto { get; set; }
+    public string ParteA { get; set; }
+    public string ParteB { get; set; }
 
     // Navegação: advogado responsável pelo impedimento
     [ForeignKey("AdvogadoId")]
-    public virtual AdvogadoModel Advogado { get; set; }
+    public AdvogadoModel AdvogadoAdvogadoResponsavel { get; set; }
 
   }
 }

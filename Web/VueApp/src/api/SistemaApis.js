@@ -106,6 +106,25 @@ async function Get(api) {
 
 const SistemaApis = {
   Rotas: SistemaApisRotas,
+
+  Impedimento: {
+    async Index(paginacao) {
+      return await Index(`${SistemaApisRotas.Impedimento.Index}`, paginacao);
+    },
+
+    async Edit(id) {
+      return await Edit(`${SistemaApisRotas.Impedimento.Edit}`, `${id}`);
+    },
+
+    async Save(dados) {
+      return await Save(`${SistemaApisRotas.Impedimento.Save}`, dados);
+    },
+
+    async Delete(dados) {
+      return await Delete(`${SistemaApisRotas.Impedimento.Delete}`, dados);
+    },
+  },
+
   Usuario: {
     async Index(paginacao) {
       return await Index(`${SistemaApisRotas.Usuario.Index}`, paginacao);

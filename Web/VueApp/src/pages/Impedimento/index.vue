@@ -10,8 +10,7 @@
               </v-col>
               <v-spacer></v-spacer>
               <v-col align="right">
-                <!-- #ROUTER_EDIT_NEW# -->
-                <v-btn v-if="!Permissao.SomenteLeitura" to="/Cadastro/Empresa/Edit/0" color="primary">
+                <v-btn v-if="!Permissao.SomenteLeitura" to="/Impedimento/Edit/0" color="primary">
                   Novo
                   <v-icon>mdi-plus</v-icon>
                 </v-btn>
@@ -45,8 +44,7 @@
 <script setup>
 definePage({
   meta: {
-    // #TITLE#
-    title: "Cadastro de Empresas - Index",
+    title: "Cadastro de Impedimento - Index",
   },
 });
 
@@ -64,13 +62,9 @@ const Permissao = computed(() => {
 });
 
 const Header = [
-  // #TABLE_HEADERS#
-  { title: "Id", key: "Id", sortable: true, width: "80px" },
-  { title: "Ativo", key: "Ativo", sortable: false, width: "80px" },
-  { title: "Sigla", key: "Sigla", sortable: true },
-  { title: "Nome", key: "Nome", sortable: true },
-  { title: "Cpf/Cnpj", key: "CpfCnpj", sortable: false },
-  { title: "Data Contrato", key: "DataContrato", sortable: false },
+  { title: "Nome", key: "Id", sortable: true },
+  // { title: "Cpf/Cnpj", key: "CpfCnpj", sortable: false },
+  // { title: "Data Contrato", key: "DataContrato", sortable: false },
   { title: "", key: "Action", width: "80px"  },
 ];
 
@@ -88,7 +82,7 @@ let Pagination = ref({
   itemsPerPage: 100,
   pageCount: 1,
   itemsLength: 0,
-  sortBy: [{ key: "Nome", order: "asc" }],
+  sortBy: [{ key: "Id", order: "asc" }],
   Filtro: {
     Busca: "",
     Inativos: false,
@@ -102,16 +96,14 @@ function RowProps(data) {
 }
 
 async function Index() {
-  // #ROUTER_INDEX#
-  let response = await api.Empresa.Index(Pagination.value);
+  let response = await api.Impedimento.Index(Pagination.value);
 
   GridData.value = response.Dados;
   Pagination.value = response.Paginacao;
 }
 
 function Edit(id) {
-  // #ROUTER_EDIT#
-  if (id) router.push(`/Cadastro/Empresa/Edit/${id}`);
+  if (id) router.push(`/Impedimento/Edit/${id}`);
 }
 
 onMounted(async () => {

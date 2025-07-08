@@ -9,11 +9,13 @@ namespace MaSistemas.ViewModel
     public DateOnly DataImpedimento { get; set; }
     public int AdvogadoId { get; set; }
     public string Objeto { get; set; }
+    public string ParteA { get; set; }
+    public string ParteB { get; set; }
 
     // Navegação: impedimentos do qual é responsável
-    public virtual ICollection<ImpedimentoViewModel> ImpedimentosResponsavel { get; set; }
+    public AdvogadoViewModel AdvogadoResponsavel { get; set; }
 
     // Navegação: verificações que este advogado realizou
-    public virtual ICollection<ImpedimentoVerificacaoViewModel> Verificacoes { get; set; }
+    // public virtual ICollection<ImpedimentoVerificacaoViewModel> Verificacoes { get; set; }
   }
 }

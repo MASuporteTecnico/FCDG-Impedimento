@@ -8,7 +8,7 @@ namespace MaSistemas.Web.Controller;
 [ApiController]
 [Authorize]
 [VeriricaPermissao]
-[Route("/api/Cadastro/Impedimento")]
+[Route("/api/Impedimento")]
 public class ImpedimentoController : ControllerBase
 {
   [Route("Index")]
